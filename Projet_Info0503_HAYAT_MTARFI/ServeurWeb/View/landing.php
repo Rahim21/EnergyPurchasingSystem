@@ -8,7 +8,10 @@
     <title>SALE - Système d'Achat de L'Energie</title>
 
     <!-- Favicons -->
-    <!-- Inserer le logo -->
+    <link rel="apple-touch-icon" sizes="180x180" href="image/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="image/favicon/favicon-16x16.png">
+    <link rel="manifest" href="image/favicon/site.webmanifest">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -29,11 +32,21 @@
 
 <body>
     <!-- ======= Header ======= -->
-    <header id="header" class="header fixed-top">
+    <header id="header" class="header fixed-top" style="background-color: transparent;">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 10) {
+                    $('#header').addClass('header-scrolled');
+                } else {
+                    $('#header').removeClass('header-scrolled');
+                }
+            });
+        </script>
         <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-            <a href="index.html" class="logo d-flex align-items-center">
-                <img src="CSS/logo1.png" alt="">
+            <a href="" class="logo d-flex align-items-center">
+                <img src="image/logo.png" alt="">
                 <span>SALE</span>
             </a>
 
@@ -42,8 +55,13 @@
                     <li><a class="nav-link scrollto active" href="#hero">Accueil</a></li>
                     <li><a class="nav-link scrollto" href="#services">Services</a></li>
                     <li><a class="nav-link scrollto" href="#team">Equipe</a></li>
-                    <li><a class="nav-link scrollto" href="register">S'inscrire</a></li>
-                    <li><a class="getstarted scrollto" href="login">Se connecer</a></li>
+
+                    <?php if ($user) : ?>
+                        <li><a class="getstarted scrollto" href="login">Accéder au site</a></li>
+                    <?php else : ?>
+                        <li><a class="nav-link scrollto" href="register">S'inscrire</a></li>
+                        <li><a class="getstarted scrollto" href="login">Se connecer</a></li>
+                    <?php endif; ?>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
@@ -69,7 +87,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
-                    <img src="assets/img/hero-img.png" class="img-fluid" alt="">
+                    <img src="image/landing_img2.svg" class="img-fluid" alt="">
                 </div>
             </div>
         </div>
@@ -88,7 +106,7 @@
                             <h3>A propos SALE</h3>
                             <h2>Il y a beaucoup d'entreprises qui vendent de l'énergie et il est difficile de savoir quel est le meilleur prix.</h2>
                             <p>
-                            Choisit automatiquement la meilleure offre pour vous en fonction de vos besoins et de vos préférences. Il vous aide également à économiser de l'argent grâce à notre outil automatisé d'optimisation énergétique.
+                                Choisit automatiquement la meilleure offre pour vous en fonction de vos besoins et de vos préférences. Il vous aide également à économiser de l'argent grâce à notre outil automatisé d'optimisation énergétique.
                             </p>
                             <div class="text-center text-lg-start">
                                 <a href="#" class="btn-read-more d-inline-flex align-items-center justify-content-center align-self-center">
@@ -190,7 +208,7 @@
                     <p>Notre équipe</p>
                 </header>
 
-                <div class="row gy-4"  style="place-content: center;">
+                <div class="row gy-4" style="place-content: center;">
 
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
                         <div class="member">
@@ -202,7 +220,7 @@
                                 <span>développeur</span>
                                 <p><a href=""><i class="bi bi-github">Github</i></a><br>
                                     <a href=""><i class="bi bi-linkedin">Linkedin</i></a><br>
-                                    Etudiant en 3ème année de Licence Informatique à l'Université de Reims Champagne-Ardenne 
+                                    Etudiant en 3ème année de Licence Informatique à l'Université de Reims Champagne-Ardenne
                                 </p>
                             </div>
                         </div>
@@ -212,14 +230,14 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
                         <div class="member">
                             <div class="member-img">
-                                <img src="assets/img/team/team-4.jpg" class="img-fluid"  alt="">
+                                <img src="assets/img/team/team-4.jpg" class="img-fluid" alt="">
                             </div>
                             <div class="member-info">
                                 <h4>Souhail MTARFI</h4>
                                 <span>Développeur </span>
                                 <p><a href="https://github.com/Suhail1929"><i class="bi bi-github">Github</i></a><br>
                                     <a href="https://www.linkedin.com/in/souhail-mtarfi-ab2140208/"><i class="bi bi-linkedin">Linkedin</i></a><br>
-                                    Etudiant en 3ème année de Licence Informatique à l'Université de Reims Champagne-Ardenne 
+                                    Etudiant en 3ème année de Licence Informatique à l'Université de Reims Champagne-Ardenne
                                 </p>
                             </div>
                         </div>

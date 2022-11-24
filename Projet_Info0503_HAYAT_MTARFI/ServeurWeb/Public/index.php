@@ -1,5 +1,4 @@
 <?php
-
 // Important pour récupérer les URI depuis notre rooter : .htaccess
 session_start();
 require '../vendor/autoload.php';
@@ -7,8 +6,10 @@ $uri = $_SERVER['REQUEST_URI'];
 $router = new AltoRouter();
 
 $router->map('GET', '/', 'landing', 'landing');
-$router->map('GET', '/login', 'Auth/login', 'login');
-$router->map('GET', '/register', 'Auth/register', 'register');
+$router->map('GET|POST', '/login', 'Auth/login', 'login');
+$router->map('GET', '/logout', 'Auth/logout', 'logout');
+$router->map('GET|POST', '/register', 'Auth/register', 'register');
+// home reçoit un paramètre GET home?login=success
 $router->map('GET', '/home', 'Auth/home', 'home');
 // aussi en 'POST' ou 'GET|POST'
 
@@ -29,6 +30,9 @@ if (is_array($match)) {
     } else {
         $params = $match['params'];
         if ($match['target'] === 'landing') {
+            require('../Controller/AuthController.php');
+            $auth = new App\AuthController("User.json");
+            $user = $auth->user();
             require('../View/landing.php');
         } elseif ($match['target'] === 'Auth/login' || $match['target'] === 'Auth/register') {
             require('../View/Layouts/auth_top.php');
@@ -36,6 +40,13 @@ if (is_array($match)) {
             require('../View/Layouts/auth_bottom.php');
         } else {
             require('../View/Layouts/header.php');
+            require('../Controller/AuthController.php');
+            $auth = new App\AuthController("User.json");
+            $user = $auth->user();
+            if ($user === null) {
+                header('Location: ' . $router->generate('login'));
+                exit();
+            }
             require("../View/{$match['target']}.php");
             require('../View/Layouts/footer.php');
         }
