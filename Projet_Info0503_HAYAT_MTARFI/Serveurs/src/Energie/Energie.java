@@ -11,10 +11,10 @@ public class Energie implements Serializable {
     private String codeDeSuivie;
     private int idActeur; // Client: 1 && Producteur: 2
     private int idProprietaire; // id du proprietaire de l'energie depuis la BDD/JSON
+    private String type;
+    private String origine;
     private int quantite;
     private double prix;
-    private String origine;
-    private String type;
 
     /**
      * Constructeur par défaut
