@@ -1,6 +1,4 @@
-<?php
-$auth->requireRole('CLIENT');
-?>
+<?php $auth->requireRole('PRODUCTEUR'); ?>
 
 <body class="g-sidenav-show   bg-gray-100">
     <div class="min-height-300 position-absolute w-100 home-background"></div>
@@ -213,19 +211,20 @@ $auth->requireRole('CLIENT');
 
 
                         <div class="card-header pb-0 px-3">
-                            <h6 class="mb-0">Vos commandes</h6>
+                            <h6 class="mb-0">Mes énergie produites</h6>
                         </div>
                         <div class="card-body pt-4 p-3 card-scroll">
                             <ul class="list-group">
+
                                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">3</span></span>
+                                        <span class="mb-2 text-xs">Energie vendu n°<span class="text-dark ms-sm-2 font-weight-bold">2</span></span>
                                         <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Electrique</span></span>
                                         <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">France</span></span>
                                         <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">555</span> kWh</span>
                                         <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">29,95</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                        <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">24/11/2022</span></span>
+                                        <span class="mb-2 text-xs">Date de vente: <span class="text-dark font-weight-bold ms-sm-2">24/11/2022</span></span>
                                         <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
                                     </div>
                                     <div class="ms-auto text-end">
@@ -237,30 +236,13 @@ $auth->requireRole('CLIENT');
                                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">2</span></span>
+                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">1</span></span>
                                         <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Chimique</span></span>
                                         <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">Maroc</span></span>
                                         <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">125</span> kWh</span>
                                         <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">60,00</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
                                         <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">20/06/2022</span></span>
                                         <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB3243892</span></span>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                    </div>
-                                </li>
-
-                                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                    <div class="d-flex flex-column">
-                                        <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">1</span></span>
-                                        <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Electrique</span></span>
-                                        <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">Espagne</span></span>
-                                        <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">345</span> kWh</span>
-                                        <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">45,50</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                        <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">10/09/2021</span></span>
-                                        <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1239470</span></span>
                                     </div>
                                     <div class="ms-auto text-end">
                                         <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>

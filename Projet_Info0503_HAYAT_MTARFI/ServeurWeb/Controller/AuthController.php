@@ -95,4 +95,13 @@ class AuthController
         $_SESSION['auth'] = $user->id;
         return $user;
     }
+
+    public function requireRole(string ...$roles): void
+    {
+        $user = $this->user();
+        if ($user === null || !in_array($user->role, $roles)) {
+            header('Location: home?forbid=1');
+            exit();
+        }
+    }
 }

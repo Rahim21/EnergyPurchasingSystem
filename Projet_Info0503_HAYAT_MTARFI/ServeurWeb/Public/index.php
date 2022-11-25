@@ -6,12 +6,15 @@ $uri = $_SERVER['REQUEST_URI'];
 $router = new AltoRouter();
 
 $router->map('GET', '/', 'landing', 'landing');
+// auth
 $router->map('GET|POST', '/login', 'Auth/login', 'login');
 $router->map('GET', '/logout', 'Auth/logout', 'logout');
 $router->map('GET|POST', '/register', 'Auth/register', 'register');
-// home reçoit un paramètre GET home?login=success
 $router->map('GET', '/home', 'Auth/home', 'home');
-// aussi en 'POST' ou 'GET|POST'
+// commande
+$router->map('GET', '/commande', 'Commande/index', 'commande');
+// production
+$router->map('GET', '/production', 'Production/index', 'production');
 
 
 /*
@@ -30,26 +33,38 @@ if (is_array($match)) {
     } else {
         $params = $match['params'];
         if ($match['target'] === 'landing') {
-            require('../Controller/AuthController.php');
+            require_once('../Controller/AuthController.php');
             $auth = new App\AuthController("User.json");
             $user = $auth->user();
-            require('../View/landing.php');
+            require_once('../View/landing.php');
         } elseif ($match['target'] === 'Auth/login' || $match['target'] === 'Auth/register') {
-            require('../View/Layouts/auth_top.php');
-            require("../View/{$match['target']}.php");
-            require('../View/Layouts/auth_bottom.php');
+            require_once('../View/Layouts/auth_top.php');
+            require_once("../View/{$match['target']}.php");
+            require_once('../View/Layouts/auth_bottom.php');
         } else {
-            require('../View/Layouts/header.php');
-            require('../Controller/AuthController.php');
+            require_once('../Controller/AuthController.php');
             $auth = new App\AuthController("User.json");
             $user = $auth->user();
             if ($user === null) {
                 header('Location: ' . $router->generate('login'));
                 exit();
             }
-            require("../View/{$match['target']}.php");
-            require('../View/Layouts/footer.php');
+            require_once('../View/Layouts/header.php');
+            require_once("../View/{$match['target']}.php");
+            require_once('../View/Layouts/footer.php');
         }
+        // alerte accès
+        if (isset($_GET['forbid'])) {
+            echo "<div class='alert alert-danger' style='width: 300px; position: absolute; top: 10px; right: 10px;'>
+                L'accès à cette page est interdit.
+            </div>";
+        }
+        if (isset($_GET['login'])) {
+            echo "<div class='alert alert-success' role='alert' style='width: 300px; position: absolute; top: 10px; right: 10px;'>
+                Vous êtes connecté !
+            </div>";
+        }
+        echo "<script>setTimeout(() => {document.querySelector('.alert').remove();}, 3000);</script>";
     }
 } else {
     echo '404';
