@@ -12,7 +12,7 @@ if ($auth->user() !== null) {
 }
 if (!empty($_POST)) {
     if ($auth->login($_POST['email'], $_POST['password'])) {
-        header('Location: ' . $router->generate('home') . '?login=success');
+        header('Location: ' . $router->generate('home') . '?success=login');
         exit();
     }
     $error = true;
@@ -21,7 +21,7 @@ if (!empty($_POST)) {
 <form method="POST" action="" class="login100-form validate-form">
     <span class="login100-form-title">
         Connectez-vous à votre compte <strong>SALE</strong>
-        
+
     </span>
 
     <?php if ($error) : ?>

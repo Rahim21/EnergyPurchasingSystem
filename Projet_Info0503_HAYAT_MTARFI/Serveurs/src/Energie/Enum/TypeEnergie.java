@@ -2,11 +2,15 @@ package Enum;
 
 public enum TypeEnergie {
     // indetifer chaque pays avec son indicatif telephonique
-    ELECTRIQUE("ELECTRIQUE"), // 00
-    THERMIQUE("THERMIQUE"), // 01
-    CHIMIQUE("CHIMIQUE"), // 02
-    MECANIQUE("MECANIQUE"), // 03
-    LUMINEUSE("LUMINEUSE"); // 04
+    ELECTRICITE("ELERCTRICITE"),
+    GAZ_NATUREL("GAZ_NATUREL"), // 01
+    ESSENCE("ESSENCE"), // 02
+    DIESEL("DIESEL"), // 03
+    SUPERCARBURANTS_SP95("SUPERCARBURANTS_SP95"), // 04
+    SUPERCARBURANTS_SP98("SUPERCARBURANTS_SP98"), // 05
+    GPL("GPL"), // 06
+    SUPERETHANOL("SUPERETHANOL"), // 07
+    GAZOLE("GAZOLE"); // 08
 
     private String nom;
 

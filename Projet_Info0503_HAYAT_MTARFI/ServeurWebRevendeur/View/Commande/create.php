@@ -125,13 +125,6 @@ $auth->requireRole('CLIENT');
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-lg border-radius-xl position-sticky card left-auto top-2 z-index-sticky" id="navbarBlur" data-scroll="false">
             <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5" href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm active" aria-current="page">Commande</li>
-                    </ol>
-                    <h6 class="font-weight-bolder mb-0">Commande</h6>
-                </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <!-- autre info? -->
@@ -213,17 +206,18 @@ $auth->requireRole('CLIENT');
 
                         <div class="card-header pb-0 px-3 card_button">
                             <h6 class="mb-0">Vos commandes</h6>
-                            <a href="<?= $router->generate('commande_create') ?>" class="card_button_right text-dark px-3 mb-0">
-                            <i class="fas fa-plus-circle text-dark me-2" aria-hidden="true"></i> Nouvelle commande</a>
+                            <a href="<?= $router->generate('commande') ?>" class="card_button_right text-dark px-3 mb-0">
+                                <a href="<?= $router->generate('commande') ?>" class="card_button_right text-dark px-3 mb-0">
+                                    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Retourner à mes commandes</a>
                         </div>
                         <div class="card-body pt-4 p-3 card-scroll">
-                        <?php
-                        $tab_type = ["ELECTRIQUE", "THERMIQUE", "CHIMIQUE", "MECANIQUE", "LUMINEUSE"];
-                        $tab_status = ["ENVOYER", "EN COURS", "LIVRER"];
-                        $tab_pays = ["FRANCE","ALLEMAGNE","ESPAGNE","ITALIE","PORTUGAL","ROUMANIE","GRECE","BELGIQUE","SUISSE","AUTRICHE","PAYS_BAS","DANEMARK","SUEDDE","NORVEGE","FINLANDE","POLOGNE","TCHECOSLOVAQUIE","HONGRIE","BULGARIE","REPUBLIQUE_TCHEQUE","SLOVAQUIE","ESTONIE","LETTONIE","LITUANIE","UKRAINE","MOLDAVIE","BOSNIE","CROATIE","MACEDOINE","SERBIE","SLOVENIE","ALBANIE","MONTENEGRO","MACEDOINE_DU_NORD","BULGARIE_DU_NORD","GRECE_DU_NORD","TURQUIE","ARMENIE","AZERBAIDJAN","GEORGIE","MAROC","TUNISIE","ALGERIE","LIBYE","MAURITANIE","SENEGAL","GAMBIE","GUINEE","GUINEE_EQUATORIALE","COTE_D_IVOIRE","GHANA","TOGO","BENIN","NIGER","NIGERIA","CHAD","CAMEROUN","CENTRAFRIQUE","CONGO","ANGOLA","GABON","REPUBLIQUE_DEMOGRAPHIQUE_DU_CONGO","REPUBLIQUE_CENTRAFRICAINE","SUDAN","ERYTHREE","ETIOPIE","SOMALIE","DJIBOUTI","KENYA","TANZANIE","OUGANDA","RWANDA","BURUNDI","ZAMBIE","ZIMBABWE","MOZAMBIQUE","CHINE","JAPON","COREE_DU_SUD","INDE","BANGLADESH","NEPAL","BIRMANIE","LAOS","VIETNAM","THAILANDE","MALAISIE","SINGAPOUR","PHILIPPINES","INDONESIE","AUSTRALIE","NOUVELLE_ZELANDE","CANADA","ETATS_UNIS","MEXIQUE","CUBA","DOMINICAINE","HAITI","GUATEMALA","SALVADOR","HONDURAS","NICARAGUA","COSTA_RICA","PANAMA"];
-                        ?>
+                            <?php
+                            $tab_type = ["ELERCTRICITE", "GAZ_NATUREL", "ESSENCE", "DIESEL", "SUPERCARBURANTS_SP95", "SUPERCARBURANTS_SP98", "GAZOLE", "GPL", "SUPERETHANOL"];
+                            $tab_status = ["ENVOYER", "EN COURS", "LIVRER"];
+                            $tab_pays = ["FRANCE", "ALBANIE", "ALGERIE", "ALLEMAGNE", "ANGOLA", "ARMENIE", "AUSTRALIE", "AUTRICHE", "AZERBAIDJAN", "BANGLADESH", "BELGIQUE", "BENIN", "BIRMANIE", "BOSNIE", "BULGARIE", "BULGARIE_DU_NORD", "BURUNDI", "CAMEROUN", "CANADA", "CENTRAFRIQUE", "CHAD", "CHINE", "CONGO", "COREE_DU_SUD", "COSTA_RICA", "COTE_D_IVOIRE", "CROATIE", "CUBA", "DANEMARK", "DJIBOUTI", "DOMINICAINE", "ERYTHREE", "ESPAGNE", "ESTONIE", "ETATS_UNIS", "ETIOPIE", "FINLANDE", "GABON", "GAMBIE", "GEORGIE", "GHANA", "GRECE", "GRECE_DU_NORD", "GUATEMALA", "GUINEE", "GUINEE_EQUATORIALE", "HAITI", "HONDURAS", "HONGRIE", "INDE", "INDONESIE", "ITALIE", "JAPON", "KENYA", "LAOS", "LETTONIE", "LIBYE", "LITUANIE", "MACEDOINE", "MACEDOINE_DU_NORD", "MALAISIE", "MAROC", "MAURITANIE", "MEXIQUE", "MOLDAVIE", "MONTENEGRO", "MOZAMBIQUE", "NEPAL", "NICARAGUA", "NIGER", "NIGERIA", "NORVEGE", "NOUVELLE_ZELANDE", "OUGANDA", "PANAMA", "PAYS_BAS", "PHILIPPINES", "POLOGNE", "PORTUGAL", "REPUBLIQUE_CENTRAFRICAINE", "REPUBLIQUE_DEMOGRAPHIQUE_DU_CONGO", "REPUBLIQUE_TCHEQUE", "ROUMANIE", "RWANDA", "SALVADOR", "SENEGAL", "SERBIE", "SINGAPOUR", "SLOVAQUIE", "SLOVENIE", "SOMALIE", "SUDAN", "SUEDDE", "SUISSE", "TANZANIE", "TCHECOSLOVAQUIE", "THAILANDE", "TOGO", "TUNISIE", "TURQUIE", "UKRAINE", "VIETNAM", "ZAMBIE", "ZIMBABWE"];
+                            ?>
 
-                            <form method="POST" action="">
+                            <form method="POST" action="<?= $router->generate('commande_store') ?>">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -235,24 +229,22 @@ $auth->requireRole('CLIENT');
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                                <label for="origine" class="form-label">Pays d'origne</label>
-                                                <select class="form-select" name="type" id="type">
+                                            <label for="origine" class="form-label">Pays d'origne</label>
+                                            <select class="form-select" name="origine" id="origine">
                                                 <?php foreach ($tab_pays as $pays) : ?>
                                                     <option value="<?= $pays ?>"><?= $pays ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                                <label for="quantite" class="form-label">Quantité souhaitée par MWh </label>
-                                                <input type="number" class="form-control" id="quantite" name="quantite" min="1" max="9999" step="1"
-                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                  title="Numbers only">
+                                            <label for="quantite" class="form-label">Quantité souhaitée par MWh </label>
+                                            <input type="number" class="form-control" id="quantite" name="quantite" min="1" max="9999" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" title="Numbers only" required>
                                         </div>
                                         <div class="mb-3">
-                                                <label for="prix" class="form-label">Budget en Euro (€)</label>
-                                                <input type="number" class="form-control" id="prix" name="prix" step=".01">
+                                            <label for="budget" class="form-label">Budget en Euro (€)</label>
+                                            <input type="number" class="form-control" id="budget" name="budget" step=".01" required>
                                         </div>
-                                        <input type="submit" class="btn btn-primary" value="Envoyer la commande">
+                                        <input type="submit" name="valider" class="btn btn-primary" value="Envoyer la commande">
                                     </div>
                                 </div>
                             </form>

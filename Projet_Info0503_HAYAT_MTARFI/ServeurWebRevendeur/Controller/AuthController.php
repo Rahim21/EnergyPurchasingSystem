@@ -86,7 +86,7 @@ class AuthController
             $role
         );
         $users[] = $user;
-        file_put_contents($this->json, json_encode($users));
+        file_put_contents($this->json, json_encode($users, JSON_PRETTY_PRINT));
 
         // connecte l'utilisateur + session
         if (session_status() === PHP_SESSION_NONE) {
@@ -100,7 +100,7 @@ class AuthController
     {
         $user = $this->user();
         if ($user === null || !in_array($user->role, $roles)) {
-            header('Location: home?forbid=1');
+            header('Location: home?invalid=forbid');
             exit();
         }
     }

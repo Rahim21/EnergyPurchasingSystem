@@ -1,6 +1,8 @@
 <?php
 
-include 'Commande.php';
+namespace Model;
+
+use JsonSerializable;
 
 class Revendeur implements JsonSerializable
 {
@@ -42,19 +44,25 @@ class Revendeur implements JsonSerializable
         $jsonTexte = @file_get_contents($URL, false, $contexte);
 
         // fromJSON pour créer un objet de type Revendeur ensuite on affiche les commandes
+
         $revendeur = Revendeur::fromJSON($jsonTexte);
         echo "Affichage côté revendeur PHP : <br><br>";
-        $revendeur->afficherCommandes();
+        if (isset($revendeur)) {
+            $revendeur->afficherCommandes();
+        }
     }
 
     public function afficherCommandes()
     {
-        foreach ($this->commandes as $commande) {
-            $commande->afficher();
+        if (isset($this->commandes)) {
+            foreach ($this->commandes as $commande) {
+                $commande->afficher();
+            }
         }
     }
 
-    public function jsonSerialize()
+    // retourne un array ?
+    public function jsonSerialize(): array
     {
         $json['nom'] = $this->nom;
         $json['adresse'] = $this->adresse;
@@ -62,14 +70,18 @@ class Revendeur implements JsonSerializable
         return $json;
     }
 
-    public static function fromJSON($json)
+    public static function fromJSON($json): ?Revendeur
     {
         $obj = json_decode($json, true);
-        // var_dump($obj);
-        $revendeur = new Revendeur($obj['nom'], $obj['adresse']);
-        foreach ($obj['commandes'] as $commande) {
-            $revendeur->ajouterCommande(new Commande($commande['nom'], $commande['type'], $commande['quantite'], $commande['quantite_min'], $commande['mode_extraction'], $commande['origine_desiree'], $commande['origine_refusee'], $commande['prix'], $commande['budget']));
+        if (isset($obj)) {
+            $revendeur = new Revendeur($obj['nom'], $obj['adresse']);
+            if (isset($obj['commandes'])) {
+                foreach ($obj['commandes'] as $commande) {
+                    $revendeur->ajouterCommande(new Commande($commande['nom'], $commande['type'], $commande['quantite'], $commande['quantite_min'], $commande['mode_extraction'], $commande['origine_desiree'], $commande['origine_refusee'], $commande['prix'], $commande['budget']));
+                }
+            }
+            return $revendeur;
         }
-        return $revendeur;
+        return null;
     }
 }

@@ -14,9 +14,9 @@ $router->map('GET', '/home', 'Auth/home', 'home');
 // commande
 $router->map('GET', '/commande', 'Commande/index', 'commande');
 $router->map('GET', '/commande-create', 'Commande/create', 'commande_create');
+$router->map('POST', '/commande-store', 'Commande/store', 'commande_store');
 // production
 $router->map('GET', '/production', 'Production/index', 'production');
-
 
 /*
 Exemple d'utilisation :
@@ -54,18 +54,8 @@ if (is_array($match)) {
             require("../View/{$match['target']}.php");
             require('../View/Layouts/footer.php');
         }
-        // alerte accès
-        if (isset($_GET['forbid'])) {
-            echo "<div class='alert alert-danger' style='width: 300px; position: absolute; top: 10px; right: 10px;'>
-                L'accès à cette page est interdit.
-            </div>";
-        }
-        if (isset($_GET['login'])) {
-            echo "<div class='alert alert-success' role='alert' style='width: 300px; position: absolute; top: 10px; right: 10px;'>
-                Vous êtes connecté !
-            </div>";
-        }
-        echo "<script>setTimeout(() => {document.querySelector('.alert').remove();}, 3000);</script>";
+        // Affichage des alertes
+        new App\AlertController();
     }
 } else {
     echo '404';

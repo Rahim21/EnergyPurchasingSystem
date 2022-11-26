@@ -125,13 +125,6 @@ $auth->requireRole('CLIENT');
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-lg border-radius-xl position-sticky card left-auto top-2 z-index-sticky" id="navbarBlur" data-scroll="false">
             <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5" href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm active" aria-current="page">Commande</li>
-                    </ol>
-                    <h6 class="font-weight-bolder mb-0">Commande</h6>
-                </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <!-- autre info? -->
@@ -214,61 +207,42 @@ $auth->requireRole('CLIENT');
                         <div class="card-header pb-0 px-3 card_button">
                             <h6 class="mb-0">Vos commandes</h6>
                             <a href="<?= $router->generate('commande_create') ?>" class="card_button_right text-dark px-3 mb-0">
-                            <i class="fas fa-plus-circle text-dark me-2" aria-hidden="true"></i> Nouvelle commande</a>
+                                <i class="fas fa-plus-circle text-dark me-2" aria-hidden="true"></i> Nouvelle commande</a>
                         </div>
                         <div class="card-body pt-4 p-3 card-scroll">
                             <ul class="list-group">
-                                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                    <div class="d-flex flex-column">
-                                        <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">3</span></span>
-                                        <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Electrique</span></span>
-                                        <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">France</span></span>
-                                        <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">555</span> kWh</span>
-                                        <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">29,95</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                        <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">24/11/2022</span></span>
-                                        <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                    </div>
-                                </li>
+                                <?php
+                                $commandeDB = new App\CommandeController("Commande.json");
+                                $mes_commandes = $commandeDB->getCommande($_SESSION['auth']);
 
-                                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                    <div class="d-flex flex-column">
-                                        <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">2</span></span>
-                                        <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Chimique</span></span>
-                                        <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">Maroc</span></span>
-                                        <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">125</span> kWh</span>
-                                        <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">60,00</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                        <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">20/06/2022</span></span>
-                                        <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB3243892</span></span>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                    </div>
-                                </li>
-
-                                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                    <div class="d-flex flex-column">
-                                        <h6 class="mb-3 text-sm">Nom Prenom</h6>
-                                        <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold">1</span></span>
-                                        <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2">Electrique</span></span>
-                                        <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2">Espagne</span></span>
-                                        <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2">345</span> kWh</span>
-                                        <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2">45,50</span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                        <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">10/09/2021</span></span>
-                                        <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1239470</span></span>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                    </div>
-                                </li>
-
+                                if ($mes_commandes !== null) {
+                                    $taille = count($mes_commandes);
+                                    foreach ($mes_commandes as $commande) : // ordre incorrect, boucler en fonction des dates : à faire 
+                                ?>
+                                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="mb-3 text-sm"><?= $user->lastname . ' ' . $user->firstname ?></h6>
+                                                <span class="mb-2 text-xs">Commande n°<span class="text-dark ms-sm-2 font-weight-bold"><?= $taille-- ?></span></span>
+                                                <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['type'] ?></span></span>
+                                                <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['origine'] ?></span></span>
+                                                <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['quantite'] ?></span> kWh</span>
+                                                <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['budget'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
+                                                <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">24/11/2022</span></span>
+                                                <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                                            </div>
+                                            <div class="ms-auto text-end">
+                                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                                            </div>
+                                        </li>
+                                <?php endforeach;
+                                } else {
+                                    echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="mb-3 text-sm">Vous n\'avez pas encore de commande</h6>
+                                            </div>
+                                        </li>';
+                                } ?>
                             </ul>
                         </div>
                     </div>

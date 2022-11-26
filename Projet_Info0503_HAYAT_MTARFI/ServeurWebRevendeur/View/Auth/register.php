@@ -16,6 +16,8 @@ if (!empty($_POST)) {
     if ($user) {
         header('Location: ' . $router->generate('home'));
         exit();
+    } else {
+        header('Location: ' . $router->generate('register') . '?invalid=alreadyexist');
     }
     $error = true;
 }

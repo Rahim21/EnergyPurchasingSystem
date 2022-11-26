@@ -1,0 +1,188 @@
+{
+    "3": [
+        {
+            "idProprietaire": 3,
+            "type": "MECANIQUE",
+            "origine": "CONGO",
+            "quantite": 43,
+            "budget": 33.3
+        }
+    ],
+    "2": [
+        {
+            "idProprietaire": 2,
+            "type": "MECANIQUE",
+            "origine": "MAROC",
+            "quantite": 34,
+            "budget": 99.91
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 2
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 2,
+            "budget": 3
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 23,
+            "budget": 34
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "MAROC",
+            "quantite": 34,
+            "budget": 34
+        }
+    ]
+}

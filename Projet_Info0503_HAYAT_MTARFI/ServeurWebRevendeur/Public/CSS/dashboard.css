@@ -6,19 +6,37 @@
   background-size: cover;
 }
 
-.card-scroll {
-  overflow-y: scroll;
-  max-height: 35rem;
+
+@media screen and (min-width: 992px) {
+  .card-scroll {
+    overflow-y: scroll;
+    min-height: 35vw;
+    max-height: 35vw;
+  }
+  .card-scroll#marche {
+    max-height: 30vw;
+    min-height: 30vw;
+  }
 }
+@media screen and (max-width: 992px) {
+  .card-scroll {
+    overflow-y: scroll;
+    min-height: 80vw;
+    max-height: 80vw;
+  }
+  .card-scroll#marche {
+    max-height: 70vw;
+    min-height: 70vw;
+  }
+}
+
 .card_button {
   display: inline-flex;
 }
 a.card_button_right {
   margin-left: auto;
 }
-.card-scroll#marche {
-  max-height: 32rem;
-}
+
 
 a#dark {
   color: #344767 !important;
