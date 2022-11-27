@@ -1,5 +1,7 @@
 import Config.Configuration;
-import ServeurTARE.ServeurTare;
+import ClassServeurTARE.ServeurTare_HTTP;
+import ClassServeurMarcheGros.ServeurMarcheGros_UDP;
+import ClassClientPONE.ClientPONE_UDP;
 
 /**
  * Lanceur de test pour démarrer une communication TCP (basé sur la fiche 1 du
@@ -34,11 +36,22 @@ public class Lanceur {
         int portEcouteTare = config.getInt("portEcouteTare");
         int portEnvoiTare = config.getInt("portEnvoiTare");
 
+        int portTARE_UDP = config.getInt("portTARE_UDP");
+        int portPONE_UDP = config.getInt("portPONE_UDP");
+        int portAMI_TCP = config.getInt("portAMI_TCP");
+
         java.util.ArrayList<Thread> mesServices = new java.util.ArrayList<Thread>();
 
         // On doit donner une référence d'objet implémentant l'interface Runnable pour
         // créer un Thread
-        mesServices.add(new Thread(new ServeurTare(portEcouteTare, portEnvoiTare)));
+        String[] nom = { "Souhail", "Rahim", "Sami", "Walid", "Fayssal", "Leo", "Corentin", "Dilara", "Mikael",
+                "Quentin" }; // 10 noms => TARE, PONE
+        mesServices
+                .add(new Thread(new ServeurTare_HTTP(portEcouteTare, portEnvoiTare, nom[(int) (Math.random() * 10)])));
+        // AMI
+        mesServices.add(new Thread(new ServeurMarcheGros_UDP(portEnvoiTare, portPONE_UDP, portAMI_TCP)));
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int)
+        (Math.random() * 10)])));
 
         java.util.Iterator<Thread> it = mesServices.iterator();
         // Cela fonctionne ici car le serveur est démarré avant le client

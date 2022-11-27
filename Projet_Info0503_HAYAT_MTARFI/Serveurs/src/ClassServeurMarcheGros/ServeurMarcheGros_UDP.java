@@ -1,3 +1,8 @@
+package ClassServeurMarcheGros;
+
+import ClassEnergie.Energie;
+import Config.Messenger;
+
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.SocketException;
@@ -24,21 +29,29 @@ import java.net.UnknownHostException;
  * 
  * @author HAYAT Rahim
  */
-public class ServeurMarcheGros {
+public class ServeurMarcheGros_UDP implements Runnable {
+    public final int portTARE_UDP;
+    public final int portPONE_UDP;
+    public final int portAMI_TCP;
+    private final Messenger gestionMessage;
 
-    public static int portEcoute = 5050;
-    public static int portAMI = 5051;
+    public ServeurMarcheGros_UDP(int portTARE_UDP, int portPONE_UDP, int portAMI_TCP) {
+        this.portTARE_UDP = portTARE_UDP;
+        this.portPONE_UDP = portPONE_UDP;
+        this.portAMI_TCP = portAMI_TCP;
+        this.gestionMessage = new Messenger("MarcheGros UDP");
+    }
 
-    public static void main(String[] args) {
+    public void run() {
 
-        int compteur = 0;
+        int compteur = 1; // ou 0 ? à tester
 
         // Création de la socket Pone
         DatagramSocket socket = null;
         try {
-            socket = new DatagramSocket(portEcoute);
+            socket = new DatagramSocket(portPONE_UDP);
         } catch (SocketException e) {
-            System.err.println("Erreur lors de la création du socket : " + e);
+            gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
             System.exit(0);
         }
 
@@ -48,27 +61,28 @@ public class ServeurMarcheGros {
         File file = new File(cheminFichier);
 
         // Afficher la liste d'energie
-        System.out.println("Liste des énergies :");
+        gestionMessage.afficheMessage("Liste des énergies :");
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String ligne = br.readLine();
                 JSONObject obj = new JSONObject(ligne);
                 if (ligne.equals("")) {
-                    System.out.println("Le fichier est vide");
+                    gestionMessage.afficheMessage("Le fichier est vide");
                 } else {
                     for (int i = 1; i <= obj.length(); i++) {
-                        System.out.println(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
+                        gestionMessage
+                                .afficheMessage(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
                     }
                     compteur = obj.length();
                 }
                 br.close();
             } catch (Exception e) {
-                System.err.println("Erreur lors de la lecture du fichier : '"
+                gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : '"
                         + cheminFichier + "'");
             }
         } else {
-            System.out.println("Le fichier n'existe pas.");
+            gestionMessage.afficheMessage("Le fichier n'existe pas.");
         }
 
         // Serveur constant avec un while
@@ -82,7 +96,7 @@ public class ServeurMarcheGros {
                 msgRecu = new DatagramPacket(tampon, tampon.length);
                 socket.receive(msgRecu);
             } catch (IOException e) {
-                System.err.println("Erreur lors de la réception du message : " + e);
+                gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
                 System.exit(0);
             }
 
@@ -93,18 +107,18 @@ public class ServeurMarcheGros {
                 Energie obj_e = (Energie) ois.readObject();
 
                 // Affichage de l'objet reçu
-                System.out.println("Recu energie [" + (compteur) + "]: " + obj_e);
+                gestionMessage.afficheMessage("Recu energie [" + (compteur) + "]: " + obj_e);
 
                 // ServeurAMI_TCP
                 // Création de la socket pour l'AMI
                 Socket socket_ami = null;
                 try {
-                    socket_ami = new Socket("localhost", portAMI);
+                    socket_ami = new Socket("localhost", portAMI_TCP);
                 } catch (UnknownHostException e) {
-                    System.err.println("Erreur sur l'hôte : " + e);
+                    gestionMessage.afficheMessage("Erreur sur l'hôte : " + e);
                     System.exit(0);
                 } catch (IOException e) {
-                    System.err.println("Création de la socket AMI impossible : " + e);
+                    gestionMessage.afficheMessage("Création de la socket AMI impossible : " + e);
                     System.exit(0);
                 }
 
@@ -116,28 +130,29 @@ public class ServeurMarcheGros {
                     output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket_ami.getOutputStream())),
                             true);
                 } catch (IOException e) {
-                    System.err.println("Association des flux impossible : " + e);
+                    gestionMessage.afficheMessage("Association des flux impossible : " + e);
                     System.exit(0);
                 }
 
                 // envoyer une réponse au client AMI format JSON
-                String reponse = "\"prix\":" + obj_e.getPrix();
+                // String reponse = "\"prix\":" + obj_e.getPrix();
+                String reponse = "\"budget\":" + obj_e.getBudget();
                 output.println(reponse);
+                gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
 
                 // reception de la réponse du client AMI
                 String reponseClient = null;
                 try {
                     reponseClient = input.readLine();
                 } catch (IOException e) {
-                    System.err.println("Erreur lors de la réception de la réponse : " + e);
+                    gestionMessage.afficheMessage("Erreur lors de la réception de la réponse : " + e);
                     System.exit(0);
                 }
 
                 // Affichage de la réponse du client AMI
-                System.out.println("Réponse AMI : " + reponseClient); // ACCEPT ou REFUSE
+                gestionMessage.afficheMessage("Reception réponse AMI : " + reponseClient); // ACCEPT ou REFUSE
                 String msgPone = "";
                 if (reponseClient.equals("ACCEPT")) {
-                    compteur++;
                     msgPone = "L'énergie à été valider par l'AMI et à été enregistré au Marché.";
                     // Ajouter son format JSON dans le fichier energie.json
                     try {
@@ -153,33 +168,34 @@ public class ServeurMarcheGros {
                         bufferedReader.close();
                         fileReader.close();
                         JSONObject obj_energie = new JSONObject(ligne);
-                        obj_energie.put(String.valueOf(compteur), obj_e.toJSON());
+                        obj_energie.put(String.valueOf(compteur++), obj_e.toJSON());
                         FileWriter fileWriter = new FileWriter(file);
                         fileWriter.write(obj_energie.toString());
                         fileWriter.close();
                     } catch (IOException e) {
-                        System.out.println("Erreur: impossible d'écrire dans le fichier '"
+                        gestionMessage.afficheMessage("Erreur: impossible d'écrire dans le fichier '"
                                 + cheminFichier + "'");
                     }
                 } else {
                     msgPone = "L'énergie n'est pas conforme, la demande à été rejeté par l'AMI.";
                 }
-                System.out.println(msgPone);
+                gestionMessage.afficheMessage(msgPone);
                 // envoyer le message au Pone + faire quelque chose pour le Tare après
                 byte[] tampon = msgPone.getBytes(); // le tampon contient le resultat à envoyer au Pone
                 DatagramPacket msg = new DatagramPacket(tampon, tampon.length, msgRecu.getAddress(),
                         msgRecu.getPort()); // port récupérer via le message reçu
                 socket.send(msg);
             } catch (ClassNotFoundException e) {
-                System.err.println("Objet reçu non reconnu : " + e);
+                gestionMessage.afficheMessage("Objet reçu non reconnu : " + e);
                 System.exit(0);
             } catch (IOException e) {
-                System.err.println("Erreur lors de la récupération de l'objet : " + e);
+                gestionMessage.afficheMessage("Erreur lors de la récupération de l'objet : " + e);
                 System.exit(0);
             }
 
         }
         // Fermeture de la socket
         socket.close();
+        gestionMessage.afficheMessage("Fermeture de la socket serveur.");
     }
 }

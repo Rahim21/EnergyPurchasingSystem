@@ -45,7 +45,7 @@ class Revendeur implements JsonSerializable
         $URL = "http://localhost:8080/tare.html";
         $contexte  = stream_context_create($options);
         $jsonTexte = @file_get_contents($URL, false, $contexte);
-        dd($jsonTexte);
+        // dd($jsonTexte);
         // fromJSON pour créer un objet de type Revendeur ensuite on affiche les commandes
 
         $revendeur = Revendeur::fromJSON($jsonTexte);
@@ -80,13 +80,15 @@ class Revendeur implements JsonSerializable
     {
         $obj = json_decode($json, true);
         if (isset($obj)) {
-            $revendeur = new Revendeur($obj['nom'], $obj['adresse']);
-            // if (isset($obj['commandes'])) {
-            //     foreach ($obj['commandes'] as $commande) {
-            //         $revendeur->ajouterCommande(new Commande($commande['nom'], $commande['type'], $commande['quantite'], $commande['quantite_min'], $commande['mode_extraction'], $commande['origine_desiree'], $commande['origine_refusee'], $commande['prix'], $commande['budget']));
-            //     }
-            // }
-            $revendeur->ajouterCommande(new Commande($obj['idProprietaire'], $obj['type'], $obj['origine'], $obj['quantite'], $obj['budget']));
+            // $revendeur = new Revendeur($obj['nom'], $obj['adresse']);
+            $revendeur = new Revendeur();
+            if (isset($obj['commande'])) {
+                // foreach ($obj['commandes'] as $commande) {
+                //     $revendeur->ajouterCommande(new Commande($commande['idProprietaire'], $commande['type'], $commande['origine'], $commande['quantite'], $commande['budget']));
+                // }
+                $revendeur->ajouterCommande(new Commande($obj['commande']['idProprietaire'], $obj['commande']['type'], $obj['commande']['origine'], $obj['commande']['quantite'], $obj['commande']['budget']));
+            }
+            // $revendeur->ajouterCommande(new Commande($obj['idProprietaire'], $obj['type'], $obj['origine'], $obj['quantite'], $obj['budget']));
             return $revendeur;
         }
         return null;

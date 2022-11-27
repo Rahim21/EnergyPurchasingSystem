@@ -1,4 +1,4 @@
-package ServeurTARE;
+package ClassServeurTARE;
 
 import org.json.JSONObject;
 

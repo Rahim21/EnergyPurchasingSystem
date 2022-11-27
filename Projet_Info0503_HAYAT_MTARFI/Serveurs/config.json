@@ -2,5 +2,8 @@
     "adresseServeurTCP":"localhost",
     "portServeurTCP":5001,
     "portEcouteTare":5010,
-    "portEnvoiTare":5011
+    "portEnvoiTare":5011,
+    "portTARE_UDP":5050,
+    "portPONE_UDP":5051,
+    "portAMI_TCP":5052
 }

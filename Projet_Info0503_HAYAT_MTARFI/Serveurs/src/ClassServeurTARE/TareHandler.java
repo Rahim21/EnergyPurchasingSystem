@@ -1,4 +1,7 @@
-package ServeurTARE;
+package ClassServeurTARE;
+
+import ClassEnergie.Energie;
+import Config.Messenger;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -15,9 +18,6 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.net.MalformedURLException;
 
-import ClassEnergie.Energie;
-import Config.Messenger;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,7 +32,7 @@ class TareHandler implements HttpHandler {
         this.tare = tare;
         this.portEcouteMarche = portEcouteMarche;
         this.portEnvoiMarche = portEnvoiMarche;
-        this.gestionMessage = new Messenger("TARE ");
+        this.gestionMessage = new Messenger("TARE | " + tare.getNom());
     }
 
     public void handle(HttpExchange t) {
