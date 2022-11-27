@@ -1,4 +1,6 @@
 {
     "adresseServeurTCP":"localhost",
-    "portServeurTCP":5001
+    "portServeurTCP":5001,
+    "portEcouteTare":5010,
+    "portEnvoiTare":5011
 }

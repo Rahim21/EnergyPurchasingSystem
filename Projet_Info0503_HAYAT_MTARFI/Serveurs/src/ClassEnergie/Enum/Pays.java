@@ -1,4 +1,4 @@
-package Enum;
+package ClassEnergie.Enum;
 
 public enum Pays {
     // indetifer chaque pays avec un identifiant unique

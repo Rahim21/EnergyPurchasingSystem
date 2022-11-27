@@ -1,3 +1,5 @@
+package ClassEnergie;
+
 import java.io.Serializable;
 import org.json.JSONObject;
 
@@ -9,12 +11,14 @@ import org.json.JSONObject;
 public class Energie implements Serializable {
 
     private String codeDeSuivie;
-    private int idActeur; // Client: 1 && Producteur: 2
-    private int idProprietaire; // id du proprietaire de l'energie depuis la BDD/JSON
+    // private int idProducteur;
+    // private int idClient;
+    private int idProprietaire;
     private String type;
     private String origine;
     private int quantite;
-    private double prix;
+    // private double prix;
+    private double budget;
 
     /**
      * Constructeur par défaut
@@ -30,12 +34,13 @@ public class Energie implements Serializable {
      * @param prenom le prénom de la energie
      * @param nom    le nom de la energie
      */
-    public Energie(int idProprietaire, String type, String origine, int quantite, double prix) {
+    public Energie(int idProprietaire, String type, String origine, int quantite, double budget) {
         this.idProprietaire = idProprietaire;
         this.type = type;
         this.origine = origine;
         this.quantite = quantite;
-        this.prix = prix;
+        // this.prix = prix;
+        this.budget = budget;
         this.codeDeSuivie = CodeDeSuivi.encoder(this);
     }
 
@@ -76,8 +81,17 @@ public class Energie implements Serializable {
      * 
      * @return le prix
      */
-    public double getPrix() {
-        return prix;
+    // public double getPrix() {
+    // return prix;
+    // }
+
+    /**
+     * Retourne le prix
+     * 
+     * @return le prix
+     */
+    public double getBudget() {
+        return budget;
     }
 
     /**
@@ -85,9 +99,9 @@ public class Energie implements Serializable {
      * 
      * @param prix le nouveau prix
      */
-    public void setPrix(double prix) {
-        this.prix = prix;
-    }
+    // public void setPrix(double prix) {
+    // this.prix = prix;
+    // }
 
     /**
      * Retourne l'origine
@@ -131,32 +145,29 @@ public class Energie implements Serializable {
      * @return une chaîne de caractères correspondant à l'objet
      */
     public String toString() {
-        // return "Energie du Propriétaire: " + idProprietaire + " (" + quantite + "
-        // kWh, " + prix + " euros, " + origine
-        // + ", " + type
-        // + ")";
-
         return "Energie du Propriétaire: " + idProprietaire + " (" + type + ", " + origine + ", " + quantite + " kWh, "
-                + prix + " euros)";
+                + budget + " euros)";
     }
 
     public JSONObject toJSON() {
         JSONObject mon_obj = new JSONObject();
         mon_obj.put("idProprietaire", idProprietaire);
-        mon_obj.put("quantite", quantite);
-        mon_obj.put("prix", prix);
-        mon_obj.put("origine", origine);
         mon_obj.put("type", type);
+        mon_obj.put("origine", origine);
+        mon_obj.put("quantite", quantite);
+        // mon_obj.put("prix", prix);
+        mon_obj.put("budget", budget);
         return mon_obj;
     }
 
     public static Energie fromJSON(String json) {
         JSONObject object = new JSONObject(json);
         int idProprietaire = object.getInt("idProprietaire");
-        int quantite = object.getInt("quantite");
-        double prix = object.getDouble("prix");
-        String origine = object.getString("origine");
         String type = object.getString("type");
-        return new Energie(idProprietaire, type, origine, quantite, prix);
+        String origine = object.getString("origine");
+        int quantite = object.getInt("quantite");
+        // double prix = object.getDouble("prix");
+        double budget = object.getDouble("budget");
+        return new Energie(idProprietaire, type, origine, quantite, budget);
     }
 }

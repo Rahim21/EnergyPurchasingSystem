@@ -1,7 +1,7 @@
-package Enum;
+package ClassEnergie.Enum;
 
 public enum TypeEnergie {
-    // indetifer chaque pays avec son indicatif telephonique
+    // indetifer chaque pays avec son identifiant
     ELECTRICITE("ELERCTRICITE"),
     GAZ_NATUREL("GAZ_NATUREL"), // 01
     ESSENCE("ESSENCE"), // 02

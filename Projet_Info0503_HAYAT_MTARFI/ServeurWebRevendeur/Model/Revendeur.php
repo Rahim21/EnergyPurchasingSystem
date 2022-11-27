@@ -8,18 +8,21 @@ class Revendeur implements JsonSerializable
 {
     private $nom;
     private $adresse;
-    private $commandes;
+    // private $commandes;
+    private $commande;
 
     public function __construct($nom = "Johne Doe", $adresse = "Rue Boulevard Port-Royal")
     {
         $this->nom = $nom;
         $this->adresse = $adresse;
-        $this->commandes = array();
+        // $this->commandes = array();
+        $this->commande = $this->commande;
     }
 
     public function ajouterCommande($commande)
     {
-        $this->commandes[] = $commande;
+        // $this->commandes[] = $commande;
+        $this->commande = $commande;
     }
 
     // on envoie la commande avec le nom et l'adresse du revendeur au serveur
@@ -42,7 +45,7 @@ class Revendeur implements JsonSerializable
         $URL = "http://localhost:8080/tare.html";
         $contexte  = stream_context_create($options);
         $jsonTexte = @file_get_contents($URL, false, $contexte);
-
+        dd($jsonTexte);
         // fromJSON pour créer un objet de type Revendeur ensuite on affiche les commandes
 
         $revendeur = Revendeur::fromJSON($jsonTexte);
@@ -50,23 +53,26 @@ class Revendeur implements JsonSerializable
         if (isset($revendeur)) {
             $revendeur->afficherCommandes();
         }
+        // dd($revendeur);
     }
 
     public function afficherCommandes()
     {
-        if (isset($this->commandes)) {
-            foreach ($this->commandes as $commande) {
-                $commande->afficher();
-            }
+        if (isset($this->commande)) {
+            // foreach ($this->commandes as $commande) {
+            //     $commande->afficher();
+            // }
+            $this->commande->afficher();
         }
     }
 
     // retourne un array ?
     public function jsonSerialize(): array
     {
-        $json['nom'] = $this->nom;
-        $json['adresse'] = $this->adresse;
-        $json['commandes'] = $this->commandes;
+        // $json['nom'] = $this->nom;
+        // $json['adresse'] = $this->adresse;
+        // $json['commandes'] = $this->commandes;
+        $json['commande'] = $this->commande;
         return $json;
     }
 
@@ -75,11 +81,12 @@ class Revendeur implements JsonSerializable
         $obj = json_decode($json, true);
         if (isset($obj)) {
             $revendeur = new Revendeur($obj['nom'], $obj['adresse']);
-            if (isset($obj['commandes'])) {
-                foreach ($obj['commandes'] as $commande) {
-                    $revendeur->ajouterCommande(new Commande($commande['nom'], $commande['type'], $commande['quantite'], $commande['quantite_min'], $commande['mode_extraction'], $commande['origine_desiree'], $commande['origine_refusee'], $commande['prix'], $commande['budget']));
-                }
-            }
+            // if (isset($obj['commandes'])) {
+            //     foreach ($obj['commandes'] as $commande) {
+            //         $revendeur->ajouterCommande(new Commande($commande['nom'], $commande['type'], $commande['quantite'], $commande['quantite_min'], $commande['mode_extraction'], $commande['origine_desiree'], $commande['origine_refusee'], $commande['prix'], $commande['budget']));
+            //     }
+            // }
+            $revendeur->ajouterCommande(new Commande($obj['idProprietaire'], $obj['type'], $obj['origine'], $obj['quantite'], $obj['budget']));
             return $revendeur;
         }
         return null;
