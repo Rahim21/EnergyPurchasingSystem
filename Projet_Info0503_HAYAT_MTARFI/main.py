@@ -3,6 +3,7 @@ import subprocess
 from threading import Thread, Lock
 import tkinter as tk
 import platform
+import webbrowser
 
 
 class TkinterPopen(tk.Text):
@@ -70,13 +71,19 @@ if __name__ == "__main__":
         updateLabelWeb()
 
     def open_web():
-        subprocess.call(["open", "http://localhost:8000"])
+        if((platform.system() == "Windows")):
+            webbrowser.open("http://localhost:8000")
+        else:
+            subprocess.call(["open", "http://localhost:8000"])
 
     def stop_web():
-        global serveurWebBool
-        if tkinter_popenWeb.proc is not None:
-            print('----- Arrêt du site du revendeur -----')
-            tkinter_popenWeb.proc.terminate()
+        if(platform.system() == "Windows"):
+            subprocess.call(["taskkill", "/F", "/IM", "php.exe"])
+        else:
+            global serveurWebBool
+            if tkinter_popenWeb.proc is not None:
+                print('----- Arrêt du site du revendeur -----')
+                tkinter_popenWeb.proc.terminate()
         serveurWebBool = False
         updateLabelWeb()
 
@@ -97,18 +104,23 @@ if __name__ == "__main__":
     def run_server():
         print('----- Lancement des serveurs -----')
         # Lancement des serveurs depuis le dossier courant : Projet_Info0503_HAYAT_MTARFI
-        if(platform.system() == "Windows"):
-            command = ["java", "-cp", "'Serveurs/cls/;Serveurs/lib/json-20220924.jar'",
-                       "Lanceur", "Serveurs/config.json"]
+        print('mon systeme est :'+platform.system())
+        if((platform.system() == "Windows")):
+            command = ["java", "-cp", "Serveurs/cls/;Serveurs/lib/json-20220924.jar", "Lanceur", "Serveurs/config.json"]
         else:
+            print('je suis sur mac')
             command = ["java", "-cp", "Serveurs/cls/:Serveurs/lib/json-20220924.jar",
                        "Lanceur", "Serveurs/config.json"]
         tkinter_popenServeur.run_commands([command])
 
     def stop_server():
-        print('----- Les serveurs sont arrêtés -----')
-        command = ["killall", "java"]
-        tkinter_popenServeur.run_commands([command])
+        if((platform.system() == "Windows")):
+            print('----- Arrêt des serveurs -----')
+            subprocess.call(["taskkill", "/F", "/IM", "java.exe"])
+        else:
+            print('----- Les serveurs sont arrêtés -----')
+            command = ["killall", "java"]
+            tkinter_popenServeur.run_commands([command])
 
     def updateLabelWeb():
         if serveurWebBool:
