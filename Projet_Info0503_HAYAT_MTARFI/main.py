@@ -1,8 +1,10 @@
 from subprocess import Popen, PIPE
 import subprocess
 from threading import Thread, Lock
+import time
 import tkinter as tk
 import platform
+import webbrowser
 
 
 class TkinterPopen(tk.Text):
@@ -21,7 +23,9 @@ class TkinterPopen(tk.Text):
         state = super().cget("state")
         super().config(state="normal")
         super().insert("end", data)
-        super().see("end")
+        if not self.user_is_scrolling():
+            super().see("end")
+
         super().config(state=state)
         if self.proc is None:
             if len(self.commands) == 0:
@@ -34,6 +38,9 @@ class TkinterPopen(tk.Text):
                 self.start_next_proc()
         else:
             super().after(100, self.stdout_loop)
+
+    def user_is_scrolling(self) -> bool:
+        return self.yview()[1] != 1.0
 
     def start_next_proc(self) -> None:
         command = self.commands.pop(0)  # Take the first one from the list
@@ -70,13 +77,19 @@ if __name__ == "__main__":
         updateLabelWeb()
 
     def open_web():
-        subprocess.call(["open", "http://localhost:8000"])
+        if((platform.system() == "Windows")):
+            webbrowser.open("http://localhost:8000")
+        else:
+            subprocess.call(["open", "http://localhost:8000"])
 
     def stop_web():
-        global serveurWebBool
-        if tkinter_popenWeb.proc is not None:
-            print('----- Arrêt du site du revendeur -----')
-            tkinter_popenWeb.proc.terminate()
+        if(platform.system() == "Windows"):
+            subprocess.call(["taskkill", "/F", "/IM", "php.exe"])
+        else:
+            global serveurWebBool
+            if tkinter_popenWeb.proc is not None:
+                print('----- Arrêt du site du revendeur -----')
+                tkinter_popenWeb.proc.terminate()
         serveurWebBool = False
         updateLabelWeb()
 
@@ -97,18 +110,26 @@ if __name__ == "__main__":
     def run_server():
         print('----- Lancement des serveurs -----')
         # Lancement des serveurs depuis le dossier courant : Projet_Info0503_HAYAT_MTARFI
-        if(platform.system() == "Windows"):
-            command = ["java", "-cp", "'Serveurs/cls/;Serveurs/lib/json-20220924.jar'",
+        print('mon systeme est :'+platform.system())
+        if((platform.system() == "Windows")):
+            command = ["java", "-cp", "Serveurs/cls/;Serveurs/lib/json-20220924.jar",
                        "Lanceur", "Serveurs/config.json"]
         else:
+            print('je suis sur mac')
             command = ["java", "-cp", "Serveurs/cls/:Serveurs/lib/json-20220924.jar",
                        "Lanceur", "Serveurs/config.json"]
+        stop_server()
+        time.sleep(0.5)
         tkinter_popenServeur.run_commands([command])
 
     def stop_server():
-        print('----- Les serveurs sont arrêtés -----')
-        command = ["killall", "java"]
-        tkinter_popenServeur.run_commands([command])
+        if((platform.system() == "Windows")):
+            print('----- Arrêt des serveurs -----')
+            subprocess.call(["taskkill", "/F", "/IM", "java.exe"])
+        else:
+            print('----- Les serveurs sont arrêtés -----')
+            command = ["killall", "java"]
+            tkinter_popenServeur.run_commands([command])
 
     def updateLabelWeb():
         if serveurWebBool:
@@ -116,13 +137,17 @@ if __name__ == "__main__":
         else:
             labelWeb.config(text="Serveur Web : OFF", background="red")
 
+    def clearWindows():
+        # enable the windows and clear the text and relock them
+        tkinter_popenServeur.config(state="normal")
+        tkinter_popenServeur.delete("1.0", "end")
+        tkinter_popenServeur.config(state="disabled")
+
     root = tk.Tk()
     root.title("HAYAT|MTARFI - [SALE] Système d'Achat de L'Energie")
     root.resizable(width=False, height=False)
 
     tkinter_popenWeb = TkinterPopen(root)
-    # tkinter_popenWeb.grid(column=0, row=0, columnspan=2)
-    # créer un label avec background vert si serveur web en marche et rouge sinon
     labelWeb = tk.Label(root, text="Serveur Web : OFF", bg="red")
     serveurWebBool = False
     labelWeb.grid(column=0, row=0)
@@ -155,5 +180,8 @@ if __name__ == "__main__":
 
     button = tk.Button(root, text="Fermer les serveurs", command=stop_server)
     button.grid(column=1, row=3, columnspan=2)
+
+    button = tk.Button(root, text="Nettoyer la fenêtre", command=clearWindows)
+    button.grid(column=1, row=4, columnspan=2)
 
     root.mainloop()

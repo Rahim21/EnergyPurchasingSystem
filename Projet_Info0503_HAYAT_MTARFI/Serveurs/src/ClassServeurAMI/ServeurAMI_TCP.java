@@ -1,7 +1,8 @@
 package ClassServeurAMI;
 
-import ClassChiffrementAES.ChiffrementAES;
 import ClassEnergie.Energie;
+import ClassChiffrementAES.ChiffrementAES;
+import Config.Messenger;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,12 +27,19 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
 
-public class ServeurAMI_TCP {
+public class ServeurAMI_TCP implements Runnable {
 
-    public static final int portEcoute = 5050;
+    public final int portAMI;
+    // public final int portAMIchiffre;
+    public final Messenger gestionMessage;
 
-    public static void main(String[] args) {
+    public ServeurAMI_TCP(int portAMI) {
+        this.portAMI = portAMI;
+        // this.portAMIchiffre = portAMIchiffre;
+        this.gestionMessage = new Messenger("AMI | ");
+    }
 
+    public void run() {
         // Serveur constant avec un while
         boolean infini = true;
         while (infini) {
@@ -39,7 +47,7 @@ public class ServeurAMI_TCP {
             // Création de la socket serveur
             ServerSocket socketServeur = null;
             try {
-                socketServeur = new ServerSocket(portEcoute);
+                socketServeur = new ServerSocket(portAMI);
             } catch (IOException e) {
                 System.err.println("Création de la socket impossible : " + e);
                 System.exit(0);
@@ -66,21 +74,41 @@ public class ServeurAMI_TCP {
                 System.exit(0);
             }
 
-            // Lecture du message crypté
             String message = "";
-            byte[] data = null;
+
+            // ----- Lecture du message formaté JSON {"prix":?} -----
             try {
                 message = input.readLine();
-                data = java.util.Base64.getDecoder().decode(message);
-                data = ChiffrementAES.dechiffrer("1234567890123456", data);
-                message = new String(data);
-                System.out.println("Message reçu : " + message);
-                Energie obj_e = Energie.fromJSON(message);
-                System.out.println("Energie reçue : " + obj_e);
             } catch (IOException e) {
                 System.err.println("Erreur lors de la lecture : " + e);
                 System.exit(0);
             }
+
+            // récupération des valeurs prix et quantité depuis le message
+            String prix = message.split(":")[1];
+            System.out.println("[Reçu] prix: " + prix);
+
+            // Envoi de du Résultat plafonné à 180 euros le mégawattheure (MWh)
+            // resultat "ACCEPT" ou "REFUSE"
+            String resultat = (Double.parseDouble(prix) > 180) ? "REFUSE"
+                    : "ACCEPT";
+            System.out.println("Envoi requête au Marche : " + resultat);
+            output.println(resultat);
+
+            // ----- Lecture du message crypté -----
+            // byte[] data = null;
+            // try {
+            //     message = input.readLine();
+            //     data = java.util.Base64.getDecoder().decode(message);
+            //     data = ChiffrementAES.dechiffrer("1234567890123456", data);
+            //     message = new String(data);
+            //     System.out.println("Message reçu : " + message);
+            //     Energie obj_e = Energie.fromJSON(message);
+            //     System.out.println("Energie reçue : " + obj_e);
+            // } catch (IOException e) {
+            //     System.err.println("Erreur lors de la lecture : " + e);
+            //     System.exit(0);
+            // }
 
             // Fermeture des flux et des sockets
             try {

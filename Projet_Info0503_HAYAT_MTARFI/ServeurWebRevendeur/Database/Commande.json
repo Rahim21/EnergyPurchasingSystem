@@ -6,6 +6,13 @@
             "origine": "CONGO",
             "quantite": 43,
             "budget": 33.3
+        },
+        {
+            "idProprietaire": 3,
+            "type": "SUPERETHANOL",
+            "origine": "ALGERIE",
+            "quantite": 10,
+            "budget": 15.02
         }
     ],
     "2": [
@@ -19,114 +26,16 @@
         {
             "idProprietaire": 2,
             "type": "ELERCTRICITE",
-            "origine": "BELGIQUE",
-            "quantite": 10,
-            "budget": 25.49
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "CANADA",
+            "origine": "FRANCE",
             "quantite": 20,
-            "budget": 30
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "CANADA",
-            "quantite": 20,
-            "budget": 30
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 22,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 22,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 1,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 1,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 1,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 1,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 1,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP95",
-            "origine": "CANADA",
-            "quantite": 5,
-            "budget": 6.03
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP95",
-            "origine": "CANADA",
-            "quantite": 5,
-            "budget": 6.03
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "ALLEMAGNE",
-            "quantite": 2,
-            "budget": 2
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 4,
-            "budget": 5
-        },
-        {
-            "idProprietaire": 2,
-            "type": "GAZOLE",
-            "origine": "BELGIQUE",
-            "quantite": 6,
-            "budget": 77
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP95",
-            "origine": "ANGOLA",
-            "quantite": 44,
             "budget": 33
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 23,
+            "budget": 23
         }
     ]
 }

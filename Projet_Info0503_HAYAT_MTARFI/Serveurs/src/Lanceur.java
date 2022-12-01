@@ -2,6 +2,7 @@ import Config.Configuration;
 import ClassServeurTARE.ServeurTare_HTTP;
 import ClassServeurMarcheGros.ServeurMarcheGros_UDP;
 import ClassClientPONE.ClientPONE_UDP;
+import ClassServeurAMI.ServeurAMI_TCP;
 
 /**
  * Lanceur de test pour démarrer une communication TCP (basé sur la fiche 1 du
@@ -39,6 +40,7 @@ public class Lanceur {
         int portTARE_UDP = config.getInt("portTARE_UDP");
         int portPONE_UDP = config.getInt("portPONE_UDP");
         int portAMI_TCP = config.getInt("portAMI_TCP");
+        // int portAMI_TCPchiffre = config.getInt("portAMI_TCPchiffre");
 
         java.util.ArrayList<Thread> mesServices = new java.util.ArrayList<Thread>();
 
@@ -47,11 +49,13 @@ public class Lanceur {
         String[] nom = { "Souhail", "Rahim", "Sami", "Walid", "Fayssal", "Leo", "Corentin", "Dilara", "Mikael",
                 "Quentin" }; // 10 noms => TARE, PONE
         mesServices
-                .add(new Thread(new ServeurTare_HTTP(portEcouteTare, portEnvoiTare, nom[(int) (Math.random() * 10)])));
-        // AMI
-        mesServices.add(new Thread(new ServeurMarcheGros_UDP(portEnvoiTare, portPONE_UDP, portAMI_TCP)));
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int)
-        (Math.random() * 10)])));
+                .add(new Thread(new ServeurTare_HTTP(portEcouteTare, portEnvoiTare, nom[(int) (Math.random() * 10)]))); // TARE
+        mesServices.add(new Thread(new ServeurMarcheGros_UDP(portEnvoiTare, portPONE_UDP, portAMI_TCP))); // MARCHE GROS
+        // supprimer port tare 1) envoie "jesuisTARE" au PONE ensuite 2) envoie la
+        // demande...
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int) (Math.random() * 10)]))); // PONE 1
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int) (Math.random() * 10)]))); // PONE 2
+        mesServices.add(new Thread(new ServeurAMI_TCP(portAMI_TCP))); // AMI
 
         java.util.Iterator<Thread> it = mesServices.iterator();
         // Cela fonctionne ici car le serveur est démarré avant le client

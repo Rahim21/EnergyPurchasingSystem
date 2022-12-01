@@ -17,7 +17,7 @@ public class Energie implements Serializable {
     private String type;
     private String origine;
     private int quantite;
-    // private double prix;
+    private double prix;
     private double budget;
 
     /**
@@ -34,13 +34,13 @@ public class Energie implements Serializable {
      * @param prenom le prénom de la energie
      * @param nom    le nom de la energie
      */
-    public Energie(int idProprietaire, String type, String origine, int quantite, double budget) {
+    public Energie(int idProprietaire, String type, String origine, int quantite, double prix) {
         this.idProprietaire = idProprietaire;
         this.type = type;
         this.origine = origine;
         this.quantite = quantite;
-        // this.prix = prix;
-        this.budget = budget;
+        this.prix = prix;
+        // this.budget = budget;
         this.codeDeSuivie = CodeDeSuivi.encoder(this);
     }
 
@@ -81,9 +81,9 @@ public class Energie implements Serializable {
      * 
      * @return le prix
      */
-    // public double getPrix() {
-    // return prix;
-    // }
+    public double getPrix() {
+        return prix;
+    }
 
     /**
      * Retourne le prix
@@ -146,7 +146,7 @@ public class Energie implements Serializable {
      */
     public String toString() {
         return "Energie du Propriétaire: " + idProprietaire + " (" + type + ", " + origine + ", " + quantite + " kWh, "
-                + budget + " euros)";
+                + prix + " euros)";
     }
 
     public JSONObject toJSON() {
@@ -155,8 +155,8 @@ public class Energie implements Serializable {
         mon_obj.put("type", type);
         mon_obj.put("origine", origine);
         mon_obj.put("quantite", quantite);
-        // mon_obj.put("prix", prix);
-        mon_obj.put("budget", budget);
+        mon_obj.put("prix", prix);
+        // mon_obj.put("budget", budget);
         return mon_obj;
     }
 
@@ -166,8 +166,8 @@ public class Energie implements Serializable {
         String type = object.getString("type");
         String origine = object.getString("origine");
         int quantite = object.getInt("quantite");
-        // double prix = object.getDouble("prix");
-        double budget = object.getDouble("budget");
-        return new Energie(idProprietaire, type, origine, quantite, budget);
+        double prix = object.getDouble("prix");
+        // double budget = object.getDouble("budget");
+        return new Energie(idProprietaire, type, origine, quantite, prix);
     }
 }

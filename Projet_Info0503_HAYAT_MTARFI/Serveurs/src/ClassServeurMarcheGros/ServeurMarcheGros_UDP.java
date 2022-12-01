@@ -43,7 +43,7 @@ public class ServeurMarcheGros_UDP implements Runnable {
     }
 
     public void run() {
-
+        gestionMessage.afficheMessage("Lancement du serveur MarcheGros UDP");
         int compteur = 1; // ou 0 ? à tester
 
         // Création de la socket Pone
@@ -57,33 +57,34 @@ public class ServeurMarcheGros_UDP implements Runnable {
 
         // données energie.json
         String dossierCourant = System.getProperty("user.dir");
-        String cheminFichier = dossierCourant + "/src/energie.json";
+        String cheminFichier = dossierCourant + "/Serveurs/src/classServeurMarcheGros/energie.json";
         File file = new File(cheminFichier);
+        // gestionMessage.afficheMessage("chemin : " + cheminFichier);
 
-        // Afficher la liste d'energie
-        gestionMessage.afficheMessage("Liste des énergies :");
-        if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String ligne = br.readLine();
-                JSONObject obj = new JSONObject(ligne);
-                if (ligne.equals("")) {
-                    gestionMessage.afficheMessage("Le fichier est vide");
-                } else {
-                    for (int i = 1; i <= obj.length(); i++) {
-                        gestionMessage
-                                .afficheMessage(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
-                    }
-                    compteur = obj.length();
-                }
-                br.close();
-            } catch (Exception e) {
-                gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : '"
-                        + cheminFichier + "'");
-            }
-        } else {
-            gestionMessage.afficheMessage("Le fichier n'existe pas.");
-        }
+        // ----- Afficher la liste d'energie -----
+        // gestionMessage.afficheMessage("Liste des énergies :");
+        // if (file.exists()) {
+        //     try {
+        //         BufferedReader br = new BufferedReader(new FileReader(file));
+        //         String ligne = br.readLine();
+        //         JSONObject obj = new JSONObject(ligne);
+        //         if (ligne.equals("")) {
+        //             gestionMessage.afficheMessage("Le fichier est vide");
+        //         } else {
+        //             for (int i = 1; i <= obj.length(); i++) {
+        //                 gestionMessage
+        //                         .afficheMessage(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
+        //             }
+        //             compteur = obj.length();
+        //         }
+        //         br.close();
+        //     } catch (Exception e) {
+        //         gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : '"
+        //                 + cheminFichier + "'");
+        //     }
+        // } else {
+        //     gestionMessage.afficheMessage("Le fichier n'existe pas.");
+        // }
 
         // Serveur constant avec un while
         boolean infini = true;
@@ -135,8 +136,7 @@ public class ServeurMarcheGros_UDP implements Runnable {
                 }
 
                 // envoyer une réponse au client AMI format JSON
-                // String reponse = "\"prix\":" + obj_e.getPrix();
-                String reponse = "\"budget\":" + obj_e.getBudget();
+                String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
                 output.println(reponse);
                 gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
 
@@ -173,8 +173,7 @@ public class ServeurMarcheGros_UDP implements Runnable {
                         fileWriter.write(obj_energie.toString());
                         fileWriter.close();
                     } catch (IOException e) {
-                        gestionMessage.afficheMessage("Erreur: impossible d'écrire dans le fichier '"
-                                + cheminFichier + "'");
+                        gestionMessage.afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
                     }
                 } else {
                     msgPone = "L'énergie n'est pas conforme, la demande à été rejeté par l'AMI.";
