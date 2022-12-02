@@ -24,16 +24,25 @@ import java.io.ObjectOutputStream;
 public class ClientPONE_UDP implements Runnable {
 
     public final int portPONE_UDP;
+    public final int portMarche_UDP;
     private final Messenger gestionMessage;
     private final String nomPONE;
 
-    public ClientPONE_UDP(int portPONE_UDP, String nomPONE) {
+    public ClientPONE_UDP(int portPONE_UDP, int portMarche_UDP, String nomPONE) {
 
         this.portPONE_UDP = portPONE_UDP;
+        this.portMarche_UDP = portMarche_UDP;
         this.nomPONE = nomPONE;
         this.gestionMessage = new Messenger("PONE | " + nomPONE);
     }
 
+    // 1.Créer une socket pour envoyer une invitation au MarcheGros
+    // "PONE,portPONE_UDP"
+    // 1b. Fermeture de la socket MarcheGros
+    // 2.Créer une socket PONE pour communiquer avec le MarcheGros de manière
+    // sécurisé
+    // 3.Envoie et reception avec la socket PONE
+    // 4.Fermer la socket PONE
     public void run() {
         Pone pone = new Pone(0, nomPONE);
         // Création de la socket
@@ -42,6 +51,24 @@ public class ClientPONE_UDP implements Runnable {
             socket = new DatagramSocket();
         } catch (SocketException e) {
             gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
+            System.exit(0);
+        }
+
+        String invitation = "PONE:" + portPONE_UDP;
+        // Envoi de l'invitation au MarcheGros
+        try {
+            // Transformation en tableau d'octets
+            byte[] donnees = invitation.getBytes();
+            InetAddress adresse = InetAddress.getByName("localhost");
+            DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
+                    adresse, portMarche_UDP);
+            socket.send(msg);
+            gestionMessage.afficheMessage("Envoi de l'invitation de communication au Marche.");
+        } catch (UnknownHostException e) {
+            gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
+            System.exit(0);
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
             System.exit(0);
         }
 

@@ -30,14 +30,12 @@ import java.net.UnknownHostException;
  * @author HAYAT Rahim
  */
 public class ServeurMarcheGros_UDP implements Runnable {
-    public final int portTARE_UDP;
-    public final int portPONE_UDP;
+    public final int portMarche_UDP;
     public final int portAMI_TCP;
     private final Messenger gestionMessage;
 
-    public ServeurMarcheGros_UDP(int portTARE_UDP, int portPONE_UDP, int portAMI_TCP) {
-        this.portTARE_UDP = portTARE_UDP;
-        this.portPONE_UDP = portPONE_UDP;
+    public ServeurMarcheGros_UDP(int portMarche_UDP, int portAMI_TCP) {
+        this.portMarche_UDP = portMarche_UDP;
         this.portAMI_TCP = portAMI_TCP;
         this.gestionMessage = new Messenger("MarcheGros UDP");
     }
@@ -46,10 +44,10 @@ public class ServeurMarcheGros_UDP implements Runnable {
         gestionMessage.afficheMessage("Lancement du serveur MarcheGros UDP");
         int compteur = 1; // ou 0 ? à tester
 
-        // Création de la socket Pone
+        // Création de la socket MARCHE UDP
         DatagramSocket socket = null;
         try {
-            socket = new DatagramSocket(portPONE_UDP);
+            socket = new DatagramSocket(portMarche_UDP);
         } catch (SocketException e) {
             gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
             System.exit(0);
@@ -64,26 +62,26 @@ public class ServeurMarcheGros_UDP implements Runnable {
         // ----- Afficher la liste d'energie -----
         // gestionMessage.afficheMessage("Liste des énergies :");
         // if (file.exists()) {
-        //     try {
-        //         BufferedReader br = new BufferedReader(new FileReader(file));
-        //         String ligne = br.readLine();
-        //         JSONObject obj = new JSONObject(ligne);
-        //         if (ligne.equals("")) {
-        //             gestionMessage.afficheMessage("Le fichier est vide");
-        //         } else {
-        //             for (int i = 1; i <= obj.length(); i++) {
-        //                 gestionMessage
-        //                         .afficheMessage(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
-        //             }
-        //             compteur = obj.length();
-        //         }
-        //         br.close();
-        //     } catch (Exception e) {
-        //         gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : '"
-        //                 + cheminFichier + "'");
-        //     }
+        // try {
+        // BufferedReader br = new BufferedReader(new FileReader(file));
+        // String ligne = br.readLine();
+        // JSONObject obj = new JSONObject(ligne);
+        // if (ligne.equals("")) {
+        // gestionMessage.afficheMessage("Le fichier est vide");
         // } else {
-        //     gestionMessage.afficheMessage("Le fichier n'existe pas.");
+        // for (int i = 1; i <= obj.length(); i++) {
+        // gestionMessage
+        // .afficheMessage(Energie.fromJSON(obj.get(Integer.toString(i)).toString()).toString());
+        // }
+        // compteur = obj.length();
+        // }
+        // br.close();
+        // } catch (Exception e) {
+        // gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : '"
+        // + cheminFichier + "'");
+        // }
+        // } else {
+        // gestionMessage.afficheMessage("Le fichier n'existe pas.");
         // }
 
         // Serveur constant avec un while
@@ -91,24 +89,52 @@ public class ServeurMarcheGros_UDP implements Runnable {
         while (infini) {
 
             // Lecture du message du client
-            DatagramPacket msgRecu = null;
+            DatagramPacket invitation = null;
             try {
                 byte[] tampon = new byte[1024];
-                msgRecu = new DatagramPacket(tampon, tampon.length);
-                socket.receive(msgRecu);
+                invitation = new DatagramPacket(tampon, tampon.length);
+                socket.receive(invitation);
             } catch (IOException e) {
                 gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
                 System.exit(0);
             }
 
+            // Lire l'invitation : "Client:Port"
+            String[] invitation_str = new String(invitation.getData(), 0, invitation.getLength()).split(":");
+            String client_invitation = invitation_str[0];
+            int port_invitation = Integer.parseInt(invitation_str[1]);
+
+            gestionMessage.afficheMessage(
+                    "Client " + client_invitation + " demande une connexion sur le port " + port_invitation);
+
             // Récupération de l'objet
+            // if Client == PONE
             try {
+                // Création de la socket Pone
+                DatagramSocket socket_invite = null;
+                try {
+                    socket_invite = new DatagramSocket(port_invitation);
+                } catch (SocketException e) {
+                    gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
+                    System.exit(0);
+                }
+
+                DatagramPacket msgRecu = null;
+                try {
+                    byte[] tampon = new byte[1024];
+                    msgRecu = new DatagramPacket(tampon, tampon.length, invitation.getAddress(), port_invitation);
+                    socket_invite.receive(msgRecu);
+                } catch (IOException e) {
+                    gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
+                    System.exit(0);
+                }
                 ByteArrayInputStream bais = new ByteArrayInputStream(msgRecu.getData());
                 ObjectInputStream ois = new ObjectInputStream(bais);
                 Energie obj_e = (Energie) ois.readObject();
 
                 // Affichage de l'objet reçu
                 gestionMessage.afficheMessage("Recu energie [" + (compteur) + "]: " + obj_e);
+                socket_invite.close();
 
                 // ServeurAMI_TCP
                 // Création de la socket pour l'AMI
@@ -173,17 +199,20 @@ public class ServeurMarcheGros_UDP implements Runnable {
                         fileWriter.write(obj_energie.toString());
                         fileWriter.close();
                     } catch (IOException e) {
-                        gestionMessage.afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
+                        gestionMessage
+                                .afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
                     }
                 } else {
                     msgPone = "L'énergie n'est pas conforme, la demande à été rejeté par l'AMI.";
                 }
                 gestionMessage.afficheMessage(msgPone);
+
+                // pour quoi faire ?
                 // envoyer le message au Pone + faire quelque chose pour le Tare après
-                byte[] tampon = msgPone.getBytes(); // le tampon contient le resultat à envoyer au Pone
-                DatagramPacket msg = new DatagramPacket(tampon, tampon.length, msgRecu.getAddress(),
-                        msgRecu.getPort()); // port récupérer via le message reçu
-                socket.send(msg);
+                // byte[] tampon = msgPone.getBytes(); // le tampon contient le resultat à envoyer au Pone
+                // DatagramPacket msg = new DatagramPacket(tampon, tampon.length, msgRecu.getAddress(),
+                //         msgRecu.getPort()); // port récupérer via le message reçu
+                // socket.send(msg);
             } catch (ClassNotFoundException e) {
                 gestionMessage.afficheMessage("Objet reçu non reconnu : " + e);
                 System.exit(0);

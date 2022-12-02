@@ -1,8 +1,10 @@
 import Config.Configuration;
 import ClassServeurTARE.ServeurTare_HTTP;
 import ClassServeurMarcheGros.ServeurMarcheGros_UDP;
+import ClassServeurMarcheGros.ServeurMulti_MarcheGros_UDP;
 import ClassClientPONE.ClientPONE_UDP;
 import ClassServeurAMI.ServeurAMI_TCP;
+import ClassServeurAMI.ServeurMulti_AMI_TCP;
 
 /**
  * Lanceur de test pour démarrer une communication TCP (basé sur la fiche 1 du
@@ -34,11 +36,12 @@ public class Lanceur {
 
         // String adresseServeurTCP = config.getString("adresseServeurTCP");
         // int portServeurTCP = config.getInt("portServeurTCP");
-        int portEcouteTare = config.getInt("portEcouteTare");
-        int portEnvoiTare = config.getInt("portEnvoiTare");
+        int portTARE = config.getInt("portTARE");
 
-        int portTARE_UDP = config.getInt("portTARE_UDP");
-        int portPONE_UDP = config.getInt("portPONE_UDP");
+        // int portTARE_UDP = config.getInt("portTARE_UDP");
+        int portPONE_UDP_1 = config.getInt("portPONE_UDP_1");
+        int portPONE_UDP_2 = config.getInt("portPONE_UDP_2");
+        int portMarche_UDP = config.getInt("portMarche_UDP");
         int portAMI_TCP = config.getInt("portAMI_TCP");
         // int portAMI_TCPchiffre = config.getInt("portAMI_TCPchiffre");
 
@@ -48,14 +51,15 @@ public class Lanceur {
         // créer un Thread
         String[] nom = { "Souhail", "Rahim", "Sami", "Walid", "Fayssal", "Leo", "Corentin", "Dilara", "Mikael",
                 "Quentin" }; // 10 noms => TARE, PONE
-        mesServices
-                .add(new Thread(new ServeurTare_HTTP(portEcouteTare, portEnvoiTare, nom[(int) (Math.random() * 10)]))); // TARE
-        mesServices.add(new Thread(new ServeurMarcheGros_UDP(portEnvoiTare, portPONE_UDP, portAMI_TCP))); // MARCHE GROS
+        // mesServices
+        // .add(new Thread(new ServeurTare_HTTP(portTARE, portMarche_UDP, nom[(int)
+        // (Math.random() * 10)]))); // TARE
+        mesServices.add(new Thread(new ServeurMulti_MarcheGros_UDP(portMarche_UDP, portAMI_TCP))); // MARCHE GROS
         // supprimer port tare 1) envoie "jesuisTARE" au PONE ensuite 2) envoie la
         // demande...
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int) (Math.random() * 10)]))); // PONE 1
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP, nom[(int) (Math.random() * 10)]))); // PONE 2
-        mesServices.add(new Thread(new ServeurAMI_TCP(portAMI_TCP))); // AMI
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 1
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 2
+        mesServices.add(new Thread(new ServeurMulti_AMI_TCP(portAMI_TCP))); // AMI
 
         java.util.Iterator<Thread> it = mesServices.iterator();
         // Cela fonctionne ici car le serveur est démarré avant le client

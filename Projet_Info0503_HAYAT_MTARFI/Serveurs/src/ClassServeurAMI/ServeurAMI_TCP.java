@@ -36,7 +36,7 @@ public class ServeurAMI_TCP implements Runnable {
     public ServeurAMI_TCP(int portAMI) {
         this.portAMI = portAMI;
         // this.portAMIchiffre = portAMIchiffre;
-        this.gestionMessage = new Messenger("AMI | ");
+        this.gestionMessage = new Messenger("AMI");
     }
 
     public void run() {
@@ -49,7 +49,7 @@ public class ServeurAMI_TCP implements Runnable {
             try {
                 socketServeur = new ServerSocket(portAMI);
             } catch (IOException e) {
-                System.err.println("Création de la socket impossible : " + e);
+                gestionMessage.afficheMessage("Création de la socket impossible : " + e);
                 System.exit(0);
             }
 
@@ -58,7 +58,7 @@ public class ServeurAMI_TCP implements Runnable {
             try {
                 socketClient = socketServeur.accept();
             } catch (IOException e) {
-                System.err.println("Erreur lors de l'attente d'une connexion : " + e);
+                gestionMessage.afficheMessage("Erreur lors de l'attente d'une connexion : " + e);
                 System.exit(0);
             }
 
@@ -70,7 +70,7 @@ public class ServeurAMI_TCP implements Runnable {
                 output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())),
                         true);
             } catch (IOException e) {
-                System.err.println("Association des flux impossible : " + e);
+                gestionMessage.afficheMessage("Association des flux impossible : " + e);
                 System.exit(0);
             }
 
@@ -80,19 +80,19 @@ public class ServeurAMI_TCP implements Runnable {
             try {
                 message = input.readLine();
             } catch (IOException e) {
-                System.err.println("Erreur lors de la lecture : " + e);
+                gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
                 System.exit(0);
             }
 
             // récupération des valeurs prix et quantité depuis le message
             String prix = message.split(":")[1];
-            System.out.println("[Reçu] prix: " + prix);
+            gestionMessage.afficheMessage("[Reçu] prix: " + prix);
 
             // Envoi de du Résultat plafonné à 180 euros le mégawattheure (MWh)
             // resultat "ACCEPT" ou "REFUSE"
             String resultat = (Double.parseDouble(prix) > 180) ? "REFUSE"
                     : "ACCEPT";
-            System.out.println("Envoi requête au Marche : " + resultat);
+            gestionMessage.afficheMessage("Envoi requête au Marche : " + resultat);
             output.println(resultat);
 
             // ----- Lecture du message crypté -----
@@ -102,11 +102,11 @@ public class ServeurAMI_TCP implements Runnable {
             //     data = java.util.Base64.getDecoder().decode(message);
             //     data = ChiffrementAES.dechiffrer("1234567890123456", data);
             //     message = new String(data);
-            //     System.out.println("Message reçu : " + message);
+            //     gestionMessage.afficheMessage("Message reçu : " + message);
             //     Energie obj_e = Energie.fromJSON(message);
-            //     System.out.println("Energie reçue : " + obj_e);
+            //     gestionMessage.afficheMessage("Energie reçue : " + obj_e);
             // } catch (IOException e) {
-            //     System.err.println("Erreur lors de la lecture : " + e);
+            //     gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
             //     System.exit(0);
             // }
 
@@ -117,7 +117,7 @@ public class ServeurAMI_TCP implements Runnable {
                 socketClient.close();
                 socketServeur.close();
             } catch (IOException e) {
-                System.err.println("Erreur lors de la fermeture des flux et des sockets : " +
+                gestionMessage.afficheMessage("Erreur lors de la fermeture des flux et des sockets : " +
                         e);
                 System.exit(0);
             }

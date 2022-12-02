@@ -15,7 +15,6 @@ public class ServeurTare_HTTP implements Runnable {
     private final String nomTARE;
 
     public ServeurTare_HTTP(int portEnvoiMarche, int portEcouteMarche, String nomTARE) {
-
         this.portEnvoiMarche = portEnvoiMarche;
         this.portEcouteMarche = portEcouteMarche;
         this.nomTARE = nomTARE;
@@ -32,7 +31,7 @@ public class ServeurTare_HTTP implements Runnable {
             System.exit(0);
         }
 
-        // /tare1 /tare2 pour deux tare ?
+        // /tare1 /tare2 pour deux tare
         serveur.createContext("/tare", new TareHandler(tare, portEnvoiMarche, portEcouteMarche));
         serveur.setExecutor(null);
         serveur.start();

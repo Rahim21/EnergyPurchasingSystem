@@ -1,10 +1,10 @@
 {
     "adresseServeurTCP":"localhost",
     "portServeurTCP":5001,
-    "portEcouteTare":5010,
-    "portEnvoiTare":5011,
-    "portTARE_UDP":5050,
-    "portPONE_UDP":5051,
+    "portTARE":5010,
+    "portMarche_UDP":5020,
+    "portPONE_UDP_1":5031,
+    "portPONE_UDP_2":5032,
     "portAMI_TCP":5052,
     "portAMI_TCPchiffre":5053
 }
