@@ -122,6 +122,6 @@ public class ClientPONE_UDP implements Runnable {
         // prix entre 10 et 100 avec 2 décimales en 1 ligne
         double prix = (int) (Math.random() * 9000) / 100.0 + 100; // régler le problème : avoir seulement 2 décimales
 
-        return new Energie(producteur, type.toString(), pays.toString(), quantite, prix);
+        return new Energie(producteur, type.toString(), pays.toString(), quantite, prix, false);
     }
 }

@@ -46,6 +46,6 @@ public class CodeDeSuivi /* implements Comparable<CodeDeSuivi> */ {
                 // .parseDouble(code.substring(11 + tailleQuantite, 11 + tailleQuantite +
                 // PrixAvantVirgule) + "."
                 // + code.substring(11 + tailleQuantite + PrixAvantVirgule));
-                return new Energie(idProprietaire, type, origine, quantite, budget);
+                return new Energie(idProprietaire, type, origine, quantite, budget, true);
         }
 }

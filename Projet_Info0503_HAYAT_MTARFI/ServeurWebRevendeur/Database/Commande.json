@@ -22,20 +22,6 @@
             "origine": "MAROC",
             "quantite": 34,
             "budget": 99.91
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 20,
-            "budget": 33
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 23,
-            "budget": 23
         }
     ]
 }

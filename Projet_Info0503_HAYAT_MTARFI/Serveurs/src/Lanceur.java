@@ -51,12 +51,10 @@ public class Lanceur {
         // créer un Thread
         String[] nom = { "Souhail", "Rahim", "Sami", "Walid", "Fayssal", "Leo", "Corentin", "Dilara", "Mikael",
                 "Quentin" }; // 10 noms => TARE, PONE
-        // mesServices
-        // .add(new Thread(new ServeurTare_HTTP(portTARE, portMarche_UDP, nom[(int)
-        // (Math.random() * 10)]))); // TARE
+        
+        // boucle pour créer des tarés, leur donné un id, pour l'entête de la requête HTTP /tare{id}
+        mesServices.add(new Thread(new ServeurTare_HTTP(portTARE, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // TARE
         mesServices.add(new Thread(new ServeurMulti_MarcheGros_UDP(portMarche_UDP, portAMI_TCP))); // MARCHE GROS
-        // supprimer port tare 1) envoie "jesuisTARE" au PONE ensuite 2) envoie la
-        // demande...
         mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 1
         mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 2
         mesServices.add(new Thread(new ServeurMulti_AMI_TCP(portAMI_TCP))); // AMI

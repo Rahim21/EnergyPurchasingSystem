@@ -11,36 +11,41 @@ import org.json.JSONObject;
 public class Energie implements Serializable {
 
     private String codeDeSuivie;
-    // private int idProducteur;
-    // private int idClient;
     private int idProprietaire;
     private String type;
     private String origine;
     private int quantite;
     private double prix;
     private double budget;
+    private boolean client;
 
     /**
      * Constructeur par défaut
      */
     public Energie() {
-        this(0, "Type inconnu", "Origine inconnue", 0, 0.0);
+        this(0, "Type inconnu", "Origine inconnue", 0, 0.0, false);
         this.codeDeSuivie = CodeDeSuivi.encoder(this);
     }
 
     /**
      * Constructeur par initialisation
      * 
-     * @param prenom le prénom de la energie
-     * @param nom    le nom de la energie
+     * @param idProprietaire l'id du propriétaire de l'énergie
+     * @param type le type de l'énergie
+     * @param origine l'origine de l'énergie
+     * @param quantite la quantité de l'énergie
+     * @param prix le prix de l'énergie
+     * @param budget le budget de l'énergie
+     * @param client client/pone
      */
-    public Energie(int idProprietaire, String type, String origine, int quantite, double prix) {
+    public Energie(int idProprietaire, String type, String origine, int quantite, double monnaie, boolean client) {
         this.idProprietaire = idProprietaire;
         this.type = type;
         this.origine = origine;
         this.quantite = quantite;
-        this.prix = prix;
-        // this.budget = budget;
+        this.client = client;
+        this.budget = monnaie;
+        this.prix = monnaie;
         this.codeDeSuivie = CodeDeSuivi.encoder(this);
     }
 
@@ -155,8 +160,11 @@ public class Energie implements Serializable {
         mon_obj.put("type", type);
         mon_obj.put("origine", origine);
         mon_obj.put("quantite", quantite);
-        mon_obj.put("prix", prix);
-        // mon_obj.put("budget", budget);
+        if(client){
+            mon_obj.put("budget", budget);
+        } else {
+            mon_obj.put("prix", prix);
+        }
         return mon_obj;
     }
 
@@ -166,8 +174,13 @@ public class Energie implements Serializable {
         String type = object.getString("type");
         String origine = object.getString("origine");
         int quantite = object.getInt("quantite");
-        double prix = object.getDouble("prix");
-        // double budget = object.getDouble("budget");
-        return new Energie(idProprietaire, type, origine, quantite, prix);
+        double monnaie;
+        boolean client = false;
+        if(object.has("prix")){
+            double prix = object.getDouble("prix");
+            return new Energie(idProprietaire, type, origine, quantite, prix, false);
+        }
+        double budget = object.getDouble("budget");
+        return new Energie(idProprietaire, type, origine, quantite, budget, true);
     }
 }

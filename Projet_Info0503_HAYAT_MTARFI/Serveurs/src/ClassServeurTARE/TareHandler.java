@@ -20,23 +20,31 @@ import java.net.MalformedURLException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.net.DatagramSocket;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 
 class TareHandler implements HttpHandler {
 
     private Tare tare;
-    public final int portEcouteMarche;
-    public final int portEnvoiMarche;
+    public final int portMarche_UDP;
+    public final int portTARE;
     private final Messenger gestionMessage;
+    private static String reponseHTTP;
 
-    public TareHandler(Tare tare, int portEnvoiMarche, int portEcouteMarche) {
+    public TareHandler(Tare tare, int portTARE, int portMarche_UDP) {
         this.tare = tare;
-        this.portEcouteMarche = portEcouteMarche;
-        this.portEnvoiMarche = portEnvoiMarche;
+        this.portMarche_UDP = portMarche_UDP;
+        this.portTARE = portTARE;
         this.gestionMessage = new Messenger("TARE | " + tare.getNom());
+        this.reponseHTTP = "";
     }
 
     public void handle(HttpExchange t) {
-        String reponse = "";
 
         // Récupération des données
         URI requestedUri = t.getRequestURI();
@@ -47,7 +55,7 @@ class TareHandler implements HttpHandler {
         try {
             br = new BufferedReader(new InputStreamReader(t.getRequestBody(), "utf-8"));
         } catch (UnsupportedEncodingException e) {
-            System.err.println("Erreur lors de la récupération du flux " + e);
+            gestionMessage.afficheMessage("Erreur lors de la récupération du flux " + e);
             System.exit(0);
         }
 
@@ -55,20 +63,20 @@ class TareHandler implements HttpHandler {
         try {
             query = br.readLine();
         } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture d'une ligne " + e);
+            gestionMessage.afficheMessage("Erreur lors de la lecture d'une ligne " + e);
             System.exit(0);
         }
 
         // Affichage des données
         if (query == null)
-            reponse += "Aucune";
+        reponseHTTP += "Aucune";
         else {
             try {
                 query = URLDecoder.decode(query, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 query = "";
             }
-            reponse += query;
+            reponseHTTP += query;
         }
 
         // Envoi de l'en-tête Http
@@ -76,27 +84,92 @@ class TareHandler implements HttpHandler {
             Headers h = t.getResponseHeaders();
             // Content-type: application/x-www-form-urlencoded
             h.set("Content-Type", "text/html; charset=utf-8");
-            t.sendResponseHeaders(200, reponse.getBytes().length);
+            t.sendResponseHeaders(200, reponseHTTP.getBytes().length);
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'envoi de l'en-tête : " + e);
+            gestionMessage.afficheMessage("Erreur lors de l'envoi de l'en-tête : " + e);
             System.exit(0);
         }
 
         // Envoi du corps (données HTML)
         try {
             OutputStream os = t.getResponseBody();
-            os.write(reponse.getBytes());
+            os.write(reponseHTTP.getBytes());
             os.close();
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'envoi du corps : " + e);
+            gestionMessage.afficheMessage("Erreur lors de l'envoi du corps : " + e);
         }
 
-        gestionMessage.afficheMessage("Lu  " + reponse);
+        gestionMessage.afficheMessage("Lu  " + reponseHTTP);
+        tare_UDP();
+    }
 
-        // Création de l'Energie
-        JSONObject obj = new JSONObject(reponse);
-        JSONObject commande = obj.getJSONObject("commande");
-        Energie energie = Energie.fromJSON(commande.toString());
-        System.out.println("Energie : " + energie);
+    public void tare_UDP(){
+        // TARE UDP
+        // Création de la socket
+        DatagramSocket socket = null;
+        try {
+            socket = new DatagramSocket();
+        } catch (SocketException e) {
+            gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
+            System.exit(0);
+        }
+
+        String invitation = "TARE:" + portTARE;
+        // Envoi de l'invitation au MarcheGros
+        try {
+            // Transformation en tableau d'octets
+            byte[] donnees = invitation.getBytes();
+            InetAddress adresse = InetAddress.getByName("localhost");
+            DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
+                    adresse, portMarche_UDP);
+            socket.send(msg);
+            gestionMessage.afficheMessage("Envoi de l'invitation de communication au Marche.");
+        } catch (UnknownHostException e) {
+            gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
+            System.exit(0);
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
+            System.exit(0);
+        }
+
+        // si reponseHTTP n'est pas null
+        if(reponseHTTP != null){
+            // Création de l'Energie
+            JSONObject obj = new JSONObject(reponseHTTP);
+            JSONObject commande = obj.getJSONObject("commande");
+            Energie obj_e = Energie.fromJSON(commande.toString());
+            gestionMessage.afficheMessage("Energie récupéré du Revendeur : " + obj_e);
+
+            // Transformation en tableau d'octets
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(baos);
+                oos.writeObject(obj_e);
+            } catch (IOException e) {
+                gestionMessage.afficheMessage("Erreur lors de la sérialisation : " + e);
+                System.exit(0);
+            }
+
+            // Création et envoi du segment UDP
+            try {
+                byte[] donnees = baos.toByteArray();
+                InetAddress adresse = InetAddress.getByName("localhost");
+                DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
+                        adresse, portTARE);
+                socket.send(msg);
+                gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
+            } catch (UnknownHostException e) {
+                gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
+                System.exit(0);
+            } catch (IOException e) {
+                gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
+                System.exit(0);
+            }
+
+            // Fermeture de la socket
+            socket.close();
+            gestionMessage.afficheMessage("Fermeture de la socket.");
+        }
+        gestionMessage.afficheMessage("Fin de la communication.");
     }
 }
