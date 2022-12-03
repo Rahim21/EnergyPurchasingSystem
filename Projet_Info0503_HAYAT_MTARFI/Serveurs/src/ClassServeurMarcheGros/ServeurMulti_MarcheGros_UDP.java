@@ -27,6 +27,7 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
     public final int portMarche_UDP;
     public final int portAMI_TCP;
     private final Messenger gestionMessage;
+    public static int IdEnergie = 1;
 
     public ServeurMulti_MarcheGros_UDP(int portMarche_UDP, int portAMI_TCP) {
         this.portMarche_UDP = portMarche_UDP;
@@ -35,7 +36,7 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
     }
 
     public void run() {
-        
+
         // Création de la socket MARCHE UDP
         DatagramSocket socketServeur = null;
         try {
@@ -44,7 +45,7 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
             gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
             System.exit(0);
         }
-        
+
         // Serveur constant avec un while
         boolean infini = true;
         while (infini) {
@@ -72,18 +73,17 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
                 gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
                 System.exit(0);
             }
-            
+
             ThreadMarcheGros t = new ThreadMarcheGros(socket_invite, invitation, portAMI_TCP, gestionMessage);
             t.start();
         }
-    
 
         // Fermeture de la socket
         // try {
-        //     socketServeur.close();
+        // socketServeur.close();
         // } catch (IOException e) {
-        //     System.err.println("Erreur lors de la fermeture de la socket : " + e);
-        //     System.exit(0);
+        // System.err.println("Erreur lors de la fermeture de la socket : " + e);
+        // System.exit(0);
         // }
     }
 

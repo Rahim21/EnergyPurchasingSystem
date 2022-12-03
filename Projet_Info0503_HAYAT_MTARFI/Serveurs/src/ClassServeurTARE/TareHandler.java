@@ -164,6 +164,16 @@ class TareHandler implements HttpHandler {
             } catch (IOException e) {
                 gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
                 System.exit(0);
+            }  
+            //recuperation de la reponse
+            byte[] donnees = new byte[1024];
+            DatagramPacket msg = new DatagramPacket(donnees, donnees.length);
+            try {
+                socket.receive(msg);
+                gestionMessage.afficheMessage("Réception de la réponse du serveur: " + new String(msg.getData()));
+            } catch (IOException e) {
+                gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
+                System.exit(0);
             }
 
             // Fermeture de la socket

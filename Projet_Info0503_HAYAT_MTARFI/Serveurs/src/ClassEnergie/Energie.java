@@ -35,7 +35,7 @@ public class Energie implements Serializable {
      * @param origine l'origine de l'énergie
      * @param quantite la quantité de l'énergie
      * @param prix le prix de l'énergie
-     * @param budget le budget de l'énergie
+     * @param budget le budget de client
      * @param client client/pone
      */
     public Energie(int idProprietaire, String type, String origine, int quantite, double monnaie, boolean client) {
@@ -150,7 +150,7 @@ public class Energie implements Serializable {
      * @return une chaîne de caractères correspondant à l'objet
      */
     public String toString() {
-        return "Energie du Propriétaire: " + idProprietaire + " (" + type + ", " + origine + ", " + quantite + " kWh, "
+        return "Energie du Propriétaire: " + idProprietaire + " (" + type + ", " + origine + ", " + quantite + " MWh, "
                 + prix + " euros)";
     }
 

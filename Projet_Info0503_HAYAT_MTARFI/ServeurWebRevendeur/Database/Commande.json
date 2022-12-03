@@ -1,27 +1,11 @@
 {
-    "3": [
-        {
-            "idProprietaire": 3,
-            "type": "MECANIQUE",
-            "origine": "CONGO",
-            "quantite": 43,
-            "budget": 33.3
-        },
-        {
-            "idProprietaire": 3,
-            "type": "SUPERETHANOL",
-            "origine": "ALGERIE",
-            "quantite": 10,
-            "budget": 15.02
-        }
-    ],
     "2": [
         {
             "idProprietaire": 2,
-            "type": "MECANIQUE",
-            "origine": "MAROC",
-            "quantite": 34,
-            "budget": 99.91
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 85,
+            "budget": 99999
         }
     ]
 }
