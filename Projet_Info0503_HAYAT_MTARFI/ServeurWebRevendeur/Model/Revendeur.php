@@ -54,6 +54,7 @@ class Revendeur implements JsonSerializable
             $revendeur->afficherCommandes();
         }
         // dd($revendeur);
+        // action du revendeur après réception de la réponse depuis le Marche de Gros [à faire]
     }
 
     public function afficherCommandes()
@@ -78,6 +79,10 @@ class Revendeur implements JsonSerializable
 
     public static function fromJSON($json): ?Revendeur
     {
+
+        $json = substr($json, 0, strrpos($json, '}') + 1);
+        $json = '{"commande":' . $json . '}';
+        // dd($json);
         $obj = json_decode($json, true);
         if (isset($obj)) {
             // $revendeur = new Revendeur($obj['nom'], $obj['adresse']);

@@ -69,7 +69,7 @@ class TareHandler implements HttpHandler {
 
         // Affichage des données
         if (query == null)
-        reponseHTTP += "Aucune";
+            reponseHTTP += "Aucune";
         else {
             try {
                 query = URLDecoder.decode(query, "UTF-8");
@@ -79,31 +79,31 @@ class TareHandler implements HttpHandler {
             reponseHTTP += query;
         }
 
-        // Envoi de l'en-tête Http
-        try {
-            Headers h = t.getResponseHeaders();
-            // Content-type: application/x-www-form-urlencoded
-            h.set("Content-Type", "text/html; charset=utf-8");
-            t.sendResponseHeaders(200, reponseHTTP.getBytes().length);
-        } catch (IOException e) {
-            gestionMessage.afficheMessage("Erreur lors de l'envoi de l'en-tête : " + e);
-            System.exit(0);
-        }
+        // // Envoi de l'en-tête Http
+        // try {
+        // Headers h = t.getResponseHeaders();
+        // // Content-type: application/x-www-form-urlencoded
+        // h.set("Content-Type", "text/html; charset=utf-8");
+        // t.sendResponseHeaders(200, reponseHTTP.getBytes().length);
+        // } catch (IOException e) {
+        // gestionMessage.afficheMessage("Erreur lors de l'envoi de l'en-tête : " + e);
+        // System.exit(0);
+        // }
 
-        // Envoi du corps (données HTML)
-        try {
-            OutputStream os = t.getResponseBody();
-            os.write(reponseHTTP.getBytes());
-            os.close();
-        } catch (IOException e) {
-            gestionMessage.afficheMessage("Erreur lors de l'envoi du corps : " + e);
-        }
+        // // Envoi du corps (données HTML)
+        // try {
+        // OutputStream os = t.getResponseBody();
+        // os.write(reponseHTTP.getBytes());
+        // os.close();
+        // } catch (IOException e) {
+        // gestionMessage.afficheMessage("Erreur lors de l'envoi du corps : " + e);
+        // }
 
         gestionMessage.afficheMessage("Lu  " + reponseHTTP);
-        tare_UDP();
+        tare_UDP(t);
     }
 
-    public void tare_UDP(){
+    public void tare_UDP(HttpExchange t) {
         // TARE UDP
         // Création de la socket
         DatagramSocket socket = null;
@@ -115,7 +115,7 @@ class TareHandler implements HttpHandler {
         }
 
         String invitation = "TARE:" + portTARE;
-        // Envoi de l'invitation au MarcheGros
+        // Envoi de l'invitation au MarcheGros [communication MarcheGros - TARE]
         try {
             // Transformation en tableau d'octets
             byte[] donnees = invitation.getBytes();
@@ -132,8 +132,8 @@ class TareHandler implements HttpHandler {
             System.exit(0);
         }
 
-        // si reponseHTTP n'est pas null
-        if(reponseHTTP != null){
+        // si reponseHTTP n'est pas null [si le revendeur a répondu]
+        if (reponseHTTP != null) {
             // Création de l'Energie
             JSONObject obj = new JSONObject(reponseHTTP);
             JSONObject commande = obj.getJSONObject("commande");
@@ -157,24 +157,47 @@ class TareHandler implements HttpHandler {
                 DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
                         adresse, portTARE);
                 socket.send(msg);
-                gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
+                gestionMessage.afficheMessage("Envoi de l'objet Energie au Marche.");
             } catch (UnknownHostException e) {
                 gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
                 System.exit(0);
             } catch (IOException e) {
                 gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
                 System.exit(0);
-            }  
-            //recuperation de la reponse
+            }
+
+            // recuperation de la reponse de la part du Marche de gros
             byte[] donnees = new byte[1024];
             DatagramPacket msg = new DatagramPacket(donnees, donnees.length);
             try {
                 socket.receive(msg);
-                gestionMessage.afficheMessage("Réception de la réponse du serveur: " + new String(msg.getData()));
+                gestionMessage.afficheMessage(
+                        "Réception de la réponse du Marche de gros: ACHAT VALIDE " + new String(msg.getData()));
             } catch (IOException e) {
                 gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
                 System.exit(0);
             }
+
+            // Envoi de l'en-tête Http
+            try {
+                Headers h = t.getResponseHeaders();
+                h.set("Content-Type", "application/json ; charset=utf-8");
+                t.sendResponseHeaders(200, msg.getData().length);
+            } catch (IOException e) {
+                System.err.println("Erreur lors de l'envoi de l'en-tête : " + e);
+                System.exit(0);
+            }
+
+            try {
+                OutputStream os = t.getResponseBody();
+                String reponse = new String(msg.getData());
+                os.write(reponse.getBytes());
+                os.close();
+            } catch (IOException e) {
+                System.err.println("Erreur lors de l'envoi du corps : " + e);
+            }
+
+            gestionMessage.afficheMessage("Envoie de réponse au Revendeur  " + donnees);
 
             // Fermeture de la socket
             socket.close();

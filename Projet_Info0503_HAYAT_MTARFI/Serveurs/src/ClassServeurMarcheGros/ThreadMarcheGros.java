@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -220,11 +221,6 @@ public class ThreadMarcheGros extends Thread {
                         if (energie.getType().equals(obj_e.getType()) && energie.getOrigine().equals(obj_e.getOrigine())
                                 && energie.getQuantite() >= obj_e.getQuantite()
                                 && energie.getPrix() * obj_e.getQuantite() <= obj_e.getBudget()) {
-                            // prix = buget ?!
-                            gestionMessage.afficheMessage("energie.getBudjet() : " + energie.getBudget());
-                            gestionMessage.afficheMessage("energie.getPrix() : " + energie.getPrix());
-                            gestionMessage.afficheMessage("obj_e.getBudget() : " + obj_e.getBudget());
-                            gestionMessage.afficheMessage("obj_e.getPrix() : " + obj_e.getPrix());
                             achatValide = true;
                             if (energie.getQuantite() == obj_e.getQuantite()) {
                                 System.out.println("on supprime l'energie");
@@ -239,10 +235,9 @@ public class ThreadMarcheGros extends Thread {
                                 energie.setQuantite(0);
                                 obj_energie.put(String.valueOf(i), energie.toJSON());
                             } else {
-                                System.out.println("on deminue la quantite de l'energie");
+                                System.out.println("on diminue la quantite de l'energie");
                                 energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
                                 obj_energie.put(String.valueOf(i), energie.toJSON());
-
                             }
 
                         }
@@ -256,7 +251,8 @@ public class ThreadMarcheGros extends Thread {
                             // Création de la socket pour le Tare
                             DatagramSocket socket = new DatagramSocket();
                             // Création du message à envoyer
-                            String msg = "ACCEPT";
+                            JSONObject energie = obj_e.toJSON();
+                            String msg = energie.toString();
                             byte[] tampon = msg.getBytes();
                             DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
                                     msgRecu.getAddress(), msgRecu.getPort());
@@ -274,7 +270,7 @@ public class ThreadMarcheGros extends Thread {
                             // Création de la socket pour le Tare
                             DatagramSocket socket = new DatagramSocket();
                             // Création du message à envoyer
-                            String msg = "REFUSE";
+                            String msg = "ACHAT REFUSE";
                             byte[] tampon = msg.getBytes();
                             DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
                                     msgRecu.getAddress(), msgRecu.getPort());
