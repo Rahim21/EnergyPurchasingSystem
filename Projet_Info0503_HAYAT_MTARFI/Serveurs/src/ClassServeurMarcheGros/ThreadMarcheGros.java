@@ -66,6 +66,7 @@ public class ThreadMarcheGros extends Thread {
 
         if (client_invitation.equals("PONE")) {
             try {
+                // reception energie
                 DatagramPacket msgRecu = null;
                 try {
                     byte[] tampon = new byte[1024];
@@ -85,6 +86,7 @@ public class ThreadMarcheGros extends Thread {
 
                 // ServeurAMI_TCP
                 // Création de la socket pour l'AMI
+
                 Socket socket_ami = null;
                 try {
                     socket_ami = new Socket("localhost", portAMI_TCP);
@@ -108,7 +110,7 @@ public class ThreadMarcheGros extends Thread {
                     System.exit(0);
                 }
 
-                // envoyer une réponse au client AMI format JSON
+                // envoyer une energie au serveur AMI format JSON
                 String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
                 output.println(reponse);
                 gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
@@ -187,6 +189,7 @@ public class ThreadMarcheGros extends Thread {
                             e);
                     System.exit(0);
                 }
+                // Récupération de l'objet
                 ByteArrayInputStream bais = new ByteArrayInputStream(msgRecu.getData());
                 ObjectInputStream ois = new ObjectInputStream(bais);
                 Energie obj_e = (Energie) ois.readObject();

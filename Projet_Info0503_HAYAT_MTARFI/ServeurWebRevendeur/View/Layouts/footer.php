@@ -8,115 +8,40 @@
                 </div>
             </div>
         </div>
-        <div class="card-body pt-4 p-3 card-scroll" id="marche">
-            <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Date : dd/mm/yyyy</h6>
-            <ul class="list-group">
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-down"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">27 March 2020, at 12:30 PM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-danger text-gradient text-sm font-weight-bold">
-                        - $ 2,500
-                    </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">27 March 2020, at 04:30 AM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                        + $ 2,000
-                    </div>
-                </li>
-            </ul>
+        <div class="card-body pt-4 p-3 card-scroll">
+                            <ul class="list-group">
+        <?php 
+        $energies = file_get_contents ('../../Serveurs/src/ClassServeurMarcheGros/energie.json');
+        $mes_enrgies = json_decode($energies, true);
+        if($mes_enrgies != null){
+        $taille = count($mes_enrgies);
+        foreach ($mes_enrgies as $key => $value):
 
-            <h6 class="text-uppercase text-body text-xs font-weight-bolder my-3">Date : dd/mm/yyyy</h6>
-            <ul class="list-group">
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">26 March 2020, at 13:45 PM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                        + $ 750
-                    </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">26 March 2020, at 12:30 PM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                        + $ 1,000
-                    </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">26 March 2020, at 08:30 AM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                        + $ 2,500
-                    </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-dark mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-exclamation"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">26 March 2020, at 05:00 AM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                        Pending
-                    </div>
-                </li>
+        ?>
+        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                            <div class="d-flex flex-column">
+                                                <span class="mb-2 text-xs">Energie n°<span class="text-dark ms-sm-2 font-weight-bold"><?= $taille-- ?></span></span>
+                                                <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['type'] ?></span></span>
+                                                <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['origine'] ?></span></span>
+                                                <span class="mb-2 text-xs">Quantité disponible: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['quantite'] ?></span> kWh</span>
+                                                <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['prix'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
+                                                <span class="mb-2 text-xs">Id de proprietaire: <span class="text-dark font-weight-bold ms-sm-2"><?=$value['idProprietaire'] ?></span></span>
+                                            </div>
+                                            <div class="ms-auto text-end">
+                                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                                            </div>
+                                        </li>
+         <?php endforeach;
+          } else {
+            echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">Le marché de gros est vide</h6>
+                </div>
+            </li>';
+            } ?>
             </ul>
-
-            <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Date : dd/mm/yyyy</h6>
-            <ul class="list-group">
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-down"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">27 March 2020, at 12:30 PM</span>
                         </div>
-                    </div>
-                    <div class="d-flex align-items-center text-danger text-gradient text-sm font-weight-bold">
-                        - $ 2,500
-                    </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                        <div class="d-flex flex-column">
-                            <h6 class="mb-1 text-dark text-sm">NomProducteur</h6>
-                            <span class="text-xs">27 March 2020, at 04:30 AM</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                        + $ 2,000
-                    </div>
-                </li>
-            </ul>
-        </div>
     </div>
 </div>
 </div>

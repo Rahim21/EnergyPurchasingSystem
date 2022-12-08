@@ -244,6 +244,20 @@
             "origine": "FRANCE",
             "quantite": 8,
             "budget": 23234
+        },
+        {
+            "idProprietaire": 2,
+            "type": "DIESEL",
+            "origine": "GRECE",
+            "quantite": 38,
+            "budget": 9999999
+        },
+        {
+            "idProprietaire": 2,
+            "type": "DIESEL",
+            "origine": "GRECE",
+            "quantite": 38,
+            "budget": 9999999
         }
     ]
 }

@@ -46,7 +46,6 @@ class TareHandler implements HttpHandler {
 
     public void handle(HttpExchange t) {
 
-        // Récupération des données
         URI requestedUri = t.getRequestURI();
         String query = requestedUri.getRawQuery();
 
