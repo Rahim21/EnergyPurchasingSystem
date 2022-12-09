@@ -118,7 +118,8 @@
                     </div>
 
                     <div class="col-lg-6 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-                        <img src="assets/img/about.jpg" class="img-fluid" alt="">
+                        <!-- taille de l'image plus petite avec contour arrondi mais carré et bleu -->
+                        <img src="image/PONE2.png" class="img-fluid" style="border-radius: 20%; border: 5px solid #3e52e9;" alt="">
                     </div>
 
                 </div>
@@ -133,62 +134,50 @@
 
                 <header class="section-header">
                     <h2>Services</h2>
-                    <p>Veritatis et dolores facere numquam et praesentium</p>
+                    <p>Salutations ! Nous sommes heureux de vous présenter notre système d'achat de l’énergie.</p>
                 </header>
 
                 <div class="row gy-4">
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                         <div class="service-box blue">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Nesciunt Mete</h3>
-                            <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusantium minus dolores iure perferendis tempore et consequatur.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/TARE1.png">
+                            <p>Notre équipe est composée des meilleurs traders qui travaillent dur pour négocier les tarifs les plus compétitifs et offrir la meilleure qualité possible.</p>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                         <div class="service-box orange">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Eosle Commodi</h3>
-                            <p>Ut autem aut autem non a. Sint sint sit facilis nam iusto sint. Libero corrupti neque eum hic non ut nesciunt dolorem.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/PONE1.png">
+                            <p>Nous avons aussi des producteurs qui produisent une variété d’options en matière d’approvisionnement en énergie, afin que nos clients puissent choisir le plan optimal pour leur entreprise ou foyer.</p>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
                         <div class="service-box green">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Ledo Markt</h3>
-                            <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id voluptas adipisci eos earum corrupti.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/TARE3.png">
+                            <p>Enfin, nous avons l'une des meilleures équipes techniques du secteur à bord pour garantir un site Revendeur convivial et intuitif qui permet aux consommateurs de faire facilement leur choix parmi toutes les options disponibles.</p>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
                         <div class="service-box red">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Asperiores Commodi</h3>
-                            <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga sit provident adipisci neque.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/PRODUCTION2.png">
+                            <p>nous offrons des solutions en matière d’énergie renouvelable telles que l’utilisation de nos sources d’énergies solaire ou encore notre système eolien qui sont très efficaces pour produire une quantité importante sans impacter notre environnement.</p>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
                         <div class="service-box purple">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Velit Doloremque.</h3>
-                            <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed animi at autem alias eius labore.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/PRODUCTION1.png">
+                            <p>Grâce à notre nouveau matériel de pointe, vous pourrez bénéficier des avantages offerts par ces sources alternatives. Notre équipement high-tech vous permettra non seulement de réduire votre facture en matière d'utilisation des ressources naturelles, mais aussi de profiter pleinement du potentiel que ce type particulier peut offrir aux utilisateurs. Nous sommes convaincus qu’avec nos produits modernes et fiables, vos besoins en termes d'approvisionnement en énergie seront satisfaits!</p>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="700">
                         <div class="service-box pink">
-                            <i class="ri-discuss-line icon"></i>
-                            <h3>Dolori Architecto</h3>
-                            <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure. Corrupti recusandae ducimus enim.</p>
-                            <a href="#" class="read-more"><span>Lire la suite</span> <i class="bi bi-arrow-right"></i></a>
+                            <img id="landing" src="image/MARCHE.png">
+                            <p>Un marché gros qui permet le stockage efficace et fiable à long terme. Notre objectif est simple : fournir aux clients un service personnalisable, abordable et durable pour satisfaire leurs exigences spécifiques en matière d’approvisionnement en énergie !</p>
                         </div>
                     </div>
 
@@ -257,7 +246,7 @@
                 <div class="row gy-4">
                     <div class="col-lg-5 col-md-12 footer-info">
                         <a href="index.html" class="logo d-flex align-items-center">
-                            <img src="assets/img/logo.png" alt="">
+                            <img src="/image/logo.png" alt="">
                             <span>SALE</span>
                         </a>
                         <p>le meilleur système d'achat de l'énergie.</p>

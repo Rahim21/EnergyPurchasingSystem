@@ -789,7 +789,7 @@
   .services .service-box {
     box-shadow: 0px 0 30px rgba(1, 41, 112, 0.08);
     height: 100%;
-    padding: 60px 30px;
+    padding: 20px 15px;
     text-align: center;
     transition: 0.3s;
     border-radius: 5px;
@@ -2407,3 +2407,9 @@
   .header-scrolled {
     background-color: #fff !important;
   }
+
+  img#landing {
+    inline-size: -webkit-fill-available;
+    border-radius: 5%;
+    padding-bottom: 15px;
+}

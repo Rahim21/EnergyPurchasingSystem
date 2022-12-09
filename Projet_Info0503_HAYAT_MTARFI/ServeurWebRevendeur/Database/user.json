@@ -22,5 +22,13 @@
         "email": "samidriouche@sale.com",
         "password": "$2y$10$iLzFdzPbaYY2V6iGohIZFOLHG6Xt0ra\/nYUGp3X2JeAI\/TbOUHKTu",
         "role": "CLIENT"
+    },
+    {
+        "id": 4,
+        "lastname": "Nom",
+        "firstname": "Prenom",
+        "email": "nom@sale.com",
+        "password": "$2y$10$tbCA8ra8uiPLYgua2ZYzvevzZRjF19b2ErSZSNq2CqDchMVe5kzQi",
+        "role": "CLIENT"
     }
 ]

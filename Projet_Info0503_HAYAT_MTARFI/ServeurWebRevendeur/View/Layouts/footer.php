@@ -8,40 +8,36 @@
                 </div>
             </div>
         </div>
-        <div class="card-body pt-4 p-3 card-scroll">
-                            <ul class="list-group">
-        <?php 
-        $energies = file_get_contents ('../../Serveurs/src/ClassServeurMarcheGros/energie.json');
-        $mes_enrgies = json_decode($energies, true);
-        if($mes_enrgies != null){
-        $taille = count($mes_enrgies);
-        foreach ($mes_enrgies as $key => $value):
+        <div class="card-body pt-4 p-3 card-scroll" id="marche">
+            <ul class="list-group">
+                <?php
+                $energies = file_get_contents('../../Serveurs/src/ClassServeurMarcheGros/energie.json');
+                $mes_enrgies = json_decode($energies, true);
+                if ($mes_enrgies != null) {
+                    $taille = count($mes_enrgies);
+                    foreach ($mes_enrgies as $key => $value) :
 
-        ?>
-        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                            <div class="d-flex flex-column">
-                                                <span class="mb-2 text-xs">Energie n°<span class="text-dark ms-sm-2 font-weight-bold"><?= $taille-- ?></span></span>
-                                                <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['type'] ?></span></span>
-                                                <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['origine'] ?></span></span>
-                                                <span class="mb-2 text-xs">Quantité disponible: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['quantite'] ?></span> kWh</span>
-                                                <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['prix'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
-                                                <span class="mb-2 text-xs">Id de proprietaire: <span class="text-dark font-weight-bold ms-sm-2"><?=$value['idProprietaire'] ?></span></span>
-                                            </div>
-                                            <div class="ms-auto text-end">
-                                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                                            </div>
-                                        </li>
-         <?php endforeach;
-          } else {
-            echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                ?>
+                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                            <div class="d-flex flex-column">
+                                <span class="mb-2 text-xs">Energie n°<span class="text-dark ms-sm-2 font-weight-bold"><?= $taille-- ?></span></span>
+                                <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['type'] ?></span></span>
+                                <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['origine'] ?></span></span>
+                                <span class="mb-2 text-xs">Quantité disponible: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['quantite'] ?></span> kWh</span>
+                                <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['prix'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
+                                <span class="mb-2 text-xs">Id Producteur: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['idProprietaire'] ?></span></span>
+                            </div>
+                        </li>
+                <?php endforeach;
+                } else {
+                    echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
               <div class="d-flex flex-column">
                 <h6 class="mb-3 text-sm">Le marché de gros est vide</h6>
                 </div>
             </li>';
-            } ?>
+                } ?>
             </ul>
-                        </div>
+        </div>
     </div>
 </div>
 </div>
