@@ -226,7 +226,7 @@ $auth->requireRole('CLIENT');
                                                 <span class="mb-2 text-xs">Type d'énergie: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['type'] ?></span></span>
                                                 <span class="mb-2 text-xs">Origine: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['origine'] ?></span></span>
                                                 <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['quantite'] ?></span> kWh</span>
-                                                <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['budget'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
+                                                <span class="mb-2 text-xs">Buget : <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['budget'] ?></span> €</span> <!-- entre 30 et 300 €/MWh -->
                                                 <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2">24/11/2022</span></span>
                                                 <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
                                             </div>

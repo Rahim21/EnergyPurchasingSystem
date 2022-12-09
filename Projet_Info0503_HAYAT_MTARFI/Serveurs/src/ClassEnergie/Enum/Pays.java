@@ -105,7 +105,8 @@ public enum Pays {
     UKRAINE("UKRAINE"), // 100
     VIETNAM("VIETNAM"), // 101
     ZAMBIE("ZAMBIE"), // 102
-    ZIMBABWE("ZIMBABWE"); // 103
+    ZIMBABWE("ZIMBABWE"), // 103
+    SANS_CONTRAINTE("SANS_CONTRAINTE"); // 104
 
     private String nom;
 

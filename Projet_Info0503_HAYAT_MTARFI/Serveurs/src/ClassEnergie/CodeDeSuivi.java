@@ -1,6 +1,5 @@
 package ClassEnergie;
 
-import java.util.HashMap;
 import ClassEnergie.Enum.Pays;
 import ClassEnergie.Enum.TypeEnergie;
 

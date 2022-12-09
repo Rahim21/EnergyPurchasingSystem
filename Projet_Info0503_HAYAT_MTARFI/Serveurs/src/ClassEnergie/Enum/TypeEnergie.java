@@ -10,7 +10,8 @@ public enum TypeEnergie {
     SUPERCARBURANTS_SP98("SUPERCARBURANTS_SP98"), // 05
     GPL("GPL"), // 06
     SUPERETHANOL("SUPERETHANOL"), // 07
-    GAZOLE("GAZOLE"); // 08
+    GAZOLE("GAZOLE"), // 08
+    SANS_CONTRAINTE("SANS_CONTRAINTE"); // 09
 
     private String nom;
 

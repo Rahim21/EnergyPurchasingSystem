@@ -4,6 +4,7 @@ import ClassEnergie.Energie;
 import Config.Messenger;
 
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 import java.io.IOException;
@@ -46,6 +47,50 @@ public class ThreadMarcheGros extends Thread {
         // this.IdEnergie = IdEnergie;
     }
 
+    public String verificationAMI(Energie obj_e) {
+        // ServeurAMI_TCP
+        // Création de la socket pour l'AMI
+
+        Socket socket_ami = null;
+        try {
+            socket_ami = new Socket("localhost", portAMI_TCP);
+        } catch (UnknownHostException e) {
+            gestionMessage.afficheMessage("Erreur sur l'hôte : " + e);
+            System.exit(0);
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Création de la socket AMI impossible : " + e);
+            System.exit(0);
+        }
+
+        // Association d'un flux d'entrée et de sortie AMI
+        BufferedReader input = null;
+        PrintWriter output = null;
+        try {
+            input = new BufferedReader(new InputStreamReader(socket_ami.getInputStream()));
+            output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket_ami.getOutputStream())),
+                    true);
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Association des flux impossible : " + e);
+            System.exit(0);
+        }
+        String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
+        output.println(reponse);
+        gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
+
+        // reception de la réponse du client AMI
+        String reponseClient = null;
+        try {
+            reponseClient = input.readLine();
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Erreur lors de la réception de la réponse : " + e);
+            System.exit(0);
+        }
+
+        // Affichage de la réponse du client AMI
+        gestionMessage.afficheMessage("Reception réponse AMI : " + reponseClient); // ACCEPT ou REFUSE
+        return reponseClient;
+    }
+
     @Override
     public void run() {
         // Lire l'invitation : "Client:Port"
@@ -83,47 +128,7 @@ public class ThreadMarcheGros extends Thread {
                 gestionMessage
                         .afficheMessage("Recu energie : " + obj_e);
                 socket_invite.close();
-
-                // ServeurAMI_TCP
-                // Création de la socket pour l'AMI
-
-                Socket socket_ami = null;
-                try {
-                    socket_ami = new Socket("localhost", portAMI_TCP);
-                } catch (UnknownHostException e) {
-                    gestionMessage.afficheMessage("Erreur sur l'hôte : " + e);
-                    System.exit(0);
-                } catch (IOException e) {
-                    gestionMessage.afficheMessage("Création de la socket AMI impossible : " + e);
-                    System.exit(0);
-                }
-
-                // Association d'un flux d'entrée et de sortie AMI
-                BufferedReader input = null;
-                PrintWriter output = null;
-                try {
-                    input = new BufferedReader(new InputStreamReader(socket_ami.getInputStream()));
-                    output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket_ami.getOutputStream())),
-                            true);
-                } catch (IOException e) {
-                    gestionMessage.afficheMessage("Association des flux impossible : " + e);
-                    System.exit(0);
-                }
-
-                // envoyer une energie au serveur AMI format JSON
-                String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
-                output.println(reponse);
-                gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
-
-                // reception de la réponse du client AMI
-                String reponseClient = null;
-                try {
-                    reponseClient = input.readLine();
-                } catch (IOException e) {
-                    gestionMessage.afficheMessage("Erreur lors de la réception de la réponse : " + e);
-                    System.exit(0);
-                }
-
+                String reponseClient = verificationAMI(obj_e);
                 // Affichage de la réponse du client AMI
                 gestionMessage.afficheMessage("Reception réponse AMI : " + reponseClient); // ACCEPT ou REFUSE
                 String msgPone = "";
@@ -268,6 +273,58 @@ public class ThreadMarcheGros extends Thread {
                             System.exit(0);
                         }
                     } else {
+                        // on envoie un message au PONE pour qu'il produit l'energie manquante
+                        // try {
+                        // // Création de la socket pour le PONE
+                        // DatagramSocket socket = new DatagramSocket();
+                        // // Création du message à envoyer
+                        // JSONObject energie = obj_e.toJSON();
+                        // String msg = energie.toString();
+                        // byte[] tampon = msg.getBytes();
+                        // DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
+                        // InetAddress.getByName("localhost"), 5000);
+                        // // Envoi du message
+                        // socket.send(msgEnvoi);
+                        // socket.close();
+
+                        // } catch (IOException e) {
+                        // gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
+                        // e);
+                        // System.exit(0);
+                        // }
+                        // reception du message du PONE
+                        // Energie energie = null;
+                        // DatagramPacket msg_p = null;
+                        // try {
+                        // byte[] tampon = new byte[1024];
+                        // msg_p = new DatagramPacket(tampon, tampon.length, invitation.getAddress(),
+                        // socketClient);
+                        // socket_invite.receive(msg_p);
+                        // energie = Energie.fromJSON(msg_p.toString());
+                        // } catch (IOException e) {
+                        // gestionMessage.afficheMessage("Erreur lors de la réception du message
+                        // ajjhzehd : " + e);
+                        // System.exit(0);
+                        // }
+                        // if (verificationAMI(energie).equals("ACCEPT")) {
+                        // try {
+                        // // Création de la socket pour le Tare
+                        // DatagramSocket socket = new DatagramSocket();
+                        // // Création du message à envoyer
+                        // JSONObject obje_en = energie.toJSON();
+                        // String msg = obje_en.toString();
+                        // byte[] tampon = msg.getBytes();
+                        // DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
+                        // msgRecu.getAddress(), msgRecu.getPort());
+                        // // Envoi du message
+                        // socket.send(msgEnvoi);
+                        // socket.close();
+                        // } catch (IOException e) {
+                        // gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
+                        // e);
+                        // System.exit(0);
+                        // }
+                        // } else {
                         // on envoie le message au Tare
                         try {
                             // Création de la socket pour le Tare
@@ -286,6 +343,7 @@ public class ThreadMarcheGros extends Thread {
                             System.exit(0);
                         }
                     }
+                    // }
                 } catch (IOException e) {
                     gestionMessage
                             .afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");

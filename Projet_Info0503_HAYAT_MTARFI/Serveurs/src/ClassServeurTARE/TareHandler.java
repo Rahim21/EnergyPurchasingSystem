@@ -171,7 +171,7 @@ class TareHandler implements HttpHandler {
             try {
                 socket.receive(msg);
                 gestionMessage.afficheMessage(
-                        "Réception de la réponse du Marche de gros: ACHAT VALIDE " + new String(msg.getData()));
+                        "Réception de la réponse du Marche de gros: " + new String(msg.getData()));
             } catch (IOException e) {
                 gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
                 System.exit(0);

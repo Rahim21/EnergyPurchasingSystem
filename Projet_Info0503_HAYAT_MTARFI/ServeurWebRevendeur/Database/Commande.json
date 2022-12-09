@@ -258,6 +258,69 @@
             "origine": "GRECE",
             "quantite": 38,
             "budget": 9999999
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 11,
+            "budget": 8952236
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "ALBANIE",
+            "quantite": 1,
+            "budget": 545
+        },
+        {
+            "idProprietaire": 2,
+            "type": "GAZ_NATUREL",
+            "origine": "FRANCE",
+            "quantite": 1,
+            "budget": 888
+        },
+        {
+            "idProprietaire": 2,
+            "type": "GAZ_NATUREL",
+            "origine": "FRANCE",
+            "quantite": 1,
+            "budget": 5856
+        },
+        {
+            "idProprietaire": 2,
+            "type": "DIESEL",
+            "origine": "FRANCE",
+            "quantite": 4,
+            "budget": 555
+        },
+        {
+            "idProprietaire": 2,
+            "type": "DIESEL",
+            "origine": "GRECE",
+            "quantite": 50,
+            "budget": 66666666
+        },
+        {
+            "idProprietaire": 2,
+            "type": "SANS_CONTRAINTE",
+            "origine": "SANS_CONTRAINTE",
+            "quantite": 8,
+            "budget": 59526526
+        },
+        {
+            "idProprietaire": 2,
+            "type": "SANS_CONTRAINTE",
+            "origine": "SANS_CONTRAINTE",
+            "quantite": 1,
+            "budget": 5959
+        },
+        {
+            "idProprietaire": 2,
+            "type": "SANS_CONTRAINTE",
+            "origine": "SANS_CONTRAINTE",
+            "quantite": 1,
+            "budget": 45664
         }
     ]
 }

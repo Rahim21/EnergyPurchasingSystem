@@ -102,6 +102,38 @@ public class ClientPONE_UDP implements Runnable {
             System.exit(0);
         }
 
+        // // la reception de l'objet Energie envoyé par le serveur
+        // Energie energie_manquant = null;
+        // DatagramPacket msg = null;
+        // try {
+        // byte[] donnees = new byte[1024];
+        // msg = new DatagramPacket(donnees, donnees.length);
+        // socket.receive(msg);
+        // energie_manquant = Energie.fromJSON(msg.toString());
+        // gestionMessage.afficheMessage("Réception de l'objet Energie du serveur.");
+        // } catch (IOException e) {
+        // gestionMessage.afficheMessage("Erreur lors de la réception du message : " +
+        // e);
+        // System.exit(0);
+        // }
+
+        // // rebond de l'objet Energie
+        // try {
+        // byte[] donnees = energie_manquant.toJSON().toString().getBytes();
+        // InetAddress adresse = InetAddress.getByName("localhost");
+        // msg = new DatagramPacket(donnees, donnees.length,
+        // adresse, portPONE_UDP);
+        // socket.send(msg);
+        // gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
+        // } catch (UnknownHostException e) {
+        // gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " +
+        // e);
+        // System.exit(0);
+        // } catch (IOException e) {
+        // gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
+        // System.exit(0);
+        // }
+
         // Fermeture de la socket
         socket.close();
         gestionMessage.afficheMessage("Fermeture de la socket.");
@@ -114,13 +146,15 @@ public class ClientPONE_UDP implements Runnable {
         // "Iberdrola" };
 
         int producteur = (int) (Math.random() * 1000); // aléatoire pour le test
-        Pays pays = Pays.values()[(int) (Math.random() * Pays.values().length)]; // depuis le fichier Enum/Pays.java
-        TypeEnergie type = TypeEnergie.values()[(int) (Math.random() * TypeEnergie.values().length)]; // depuis le
-                                                                                                      // fichier
-                                                                                                      // Enum/TypeEnergie.java
+        Pays pays = Pays.values()[(int) (Math.random() * Pays.values().length - 1)]; // depuis le fichier Enum/Pays.java
+        TypeEnergie type = TypeEnergie.values()[(int) (Math.random() * TypeEnergie.values().length - 1)]; // depuis le
+                                                                                                          // fichier
+                                                                                                          // Enum/TypeEnergie.java
         int quantite = (int) (Math.random() * 900) + 100;
-        // prix entre 10 et 100 avec 2 décimales en 1 ligne
-        double prix = (int) (Math.random() * 9000) / 100.0 + 100; // régler le problème : avoir seulement 2 décimales
+
+        // prix entre 10 et 100
+        int prixEntier = (int) ((Math.random() * 900) + 100) * 100;
+        double prix = prixEntier / 100.0;
 
         return new Energie(producteur, type.toString(), pays.toString(), quantite, prix, false);
     }
