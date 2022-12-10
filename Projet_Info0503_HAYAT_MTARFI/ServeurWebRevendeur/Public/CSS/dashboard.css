@@ -26983,3 +26983,10 @@ a#dark {
       overflow: auto !important;
     }
   }
+
+  span.mb-2.text-xs.client {
+    /* background-color: lightblue; */
+    background-color: darkturquoise;
+    font-weight: bold;
+    padding: 3px;
+}

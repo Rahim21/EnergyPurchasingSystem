@@ -217,10 +217,10 @@ $auth->requireRole('CLIENT');
 
                                 if ($mes_commandes !== null) {
                                     $taille = count($mes_commandes);
-                                    for($i = count($mes_commandes)-1; $i > 0; $i--) {
+                                    for ($i = count($mes_commandes) - 1; $i >= 0; $i--) {
                                         $commande = $mes_commandes[$i];
                                 ?>
-                                <?php $commande_tmp = new Model\Commande($user->id, $commande['type'], $commande['origine'], $commande['quantite'], $commande['budget']);?>
+                                        <?php $commande_tmp = new Model\Commande($user->id, $commande['type'], $commande['origine'], $commande['quantite'], $commande['budget']); ?>
                                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                                             <div class="d-flex flex-column">
                                                 <h6 class="mb-3 text-sm"><?= $user->lastname . ' ' . $user->firstname ?></h6>
@@ -233,8 +233,8 @@ $auth->requireRole('CLIENT');
                                                 <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold"><?= $commande_tmp->encode($commande_tmp); ?></span></span>
                                             </div>
                                             <div class="ms-auto text-end">
-                                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Vérifier Certificat</a>
+                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Supprimer</a>
                                             </div>
                                         </li>
                                 <?php };

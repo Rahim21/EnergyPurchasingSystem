@@ -33,6 +33,7 @@ public class ClientPONE_UDP implements Runnable {
     public final int portMarche_UDP;
     private final Messenger gestionMessage;
     private final String nomPONE;
+    // private Pone pone;
 
     public ClientPONE_UDP(int portPONE_UDP, int portMarche_UDP, String nomPONE) {
 
@@ -53,6 +54,8 @@ public class ClientPONE_UDP implements Runnable {
         DatagramSocket socket = null;
         boolean infini = true;
         while (infini) {
+
+            // this.pone = new Pone(0, nomPONE);
             Pone pone = new Pone(0, nomPONE);
             // Création de la socket
             try {
@@ -100,6 +103,11 @@ public class ClientPONE_UDP implements Runnable {
                     JSONObject obj_energie = new JSONObject(ligne);
                     int nbEnergie = obj_energie.length();
                     JSONObject obj = obj_energie.getJSONObject(String.valueOf(nbEnergie));
+
+                    int idClient = obj.getInt("idProprietaire");
+                    // obj.put("idProprietaire", this.pone.getIdPone());
+                    obj.put("idProprietaire", (int) (Math.random() * 1000));
+                    obj.put("idClient", idClient);
                     Energie energie = Energie.fromJSON(obj.toString());
                     gestionMessage.afficheMessage("Energie demandée : " + energie);
                     // on l'envoie au serveur
@@ -133,6 +141,16 @@ public class ClientPONE_UDP implements Runnable {
                     System.exit(0);
                 }
             } else {
+
+                try {
+                    // temps 2-20 secondes entre chaque envoi d'energie
+                    // gestionMessage.afficheMessage("Temps d'attente : " + temps + "ms");
+                    int temps = (int) (Math.random() * 20000 + 2000);
+                    Thread.sleep(temps);
+                } catch (InterruptedException e) {
+                    gestionMessage.afficheMessage("Erreur lors du sleep : " + e);
+                    System.exit(0);
+                }
 
                 // Créer une énergie avec les paramètres du fichier attenteCommande.json
                 // Energie energie_demandee = Energie.fromJSON(fichier_attenteCommande.json);
@@ -168,11 +186,11 @@ public class ClientPONE_UDP implements Runnable {
                     System.exit(0);
                 }
             }
-            // temps 20-60 secondes entre chaque envoi d'energie
-            int temps = (int) (Math.random() * 40000 + 20000);
-            gestionMessage.afficheMessage("Temps d'attente : " + temps + "ms");
 
             try {
+                // temps 20-60 secondes entre chaque envoi d'energie
+                // gestionMessage.afficheMessage("Temps d'attente : " + temps + "ms");
+                int temps = (int) (Math.random() * 40000 + 20000);
                 Thread.sleep(temps);
             } catch (InterruptedException e) {
                 gestionMessage.afficheMessage("Erreur lors du sleep : " + e);
@@ -184,10 +202,11 @@ public class ClientPONE_UDP implements Runnable {
         gestionMessage.afficheMessage("Fermeture de la socket.");
     }
 
-    public static Energie genererEnergie() {
+    public Energie genererEnergie() {
         // String[] liste_producteur =
         // {"EDF","Total","Engie","Uniper","EDP","Enel","RWE","Vattenfall","Tepco","GDF","Iberdrola"};
 
+        // int producteur = this.pone.getIdPone();
         int producteur = (int) (Math.random() * 1000); // aléatoire pour le test
         Pays pays = Pays.values()[(int) (Math.random() * Pays.values().length - 1)]; // depuis le fichier Enum/Pays.java
         TypeEnergie type = TypeEnergie.values()[(int) (Math.random() * TypeEnergie.values().length - 1)]; // depuis le

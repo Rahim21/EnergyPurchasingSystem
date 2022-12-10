@@ -130,8 +130,6 @@ public class ThreadMarcheGros extends Thread {
                 gestionMessage.afficheMessage("Code de suivi : " + obj_e.getCodeDeSuivie());
                 socket_invite.close();
                 String reponseClient = verificationAMI(obj_e);
-                // Affichage de la réponse du client AMI
-                gestionMessage.afficheMessage("Reception réponse AMI : " + reponseClient); // ACCEPT ou REFUSE
                 String msgPone = "";
                 if (reponseClient.equals("ACCEPT")) {
                     msgPone = "L'énergie à été valider par l'AMI et à été enregistré au Marché.";
@@ -219,8 +217,7 @@ public class ThreadMarcheGros extends Thread {
                     fileReader.close();
                     JSONObject obj_energie = new JSONObject(ligne);
                     int nbEnergie = obj_energie.length();
-                    for (int i = 1; i <= nbEnergie; i++)
-                    {
+                    for (int i = 1; i <= nbEnergie; i++) {
                         JSONObject obj = obj_energie.getJSONObject(String.valueOf(i));
                         Energie energie = Energie.fromJSON(obj.toString());
                         /*
@@ -232,7 +229,8 @@ public class ThreadMarcheGros extends Thread {
                          * 2- type = SANS_CONTRAINTE le reste est normal
                          * 3 - origine = SANS_CONTRAINTE le reste est normal
                          * 4 - type et origine = SANS_CONTRAINTE
-                         * 5 - le marche enregistre une commande souhaité du client non disponible, pour que les PONE la produisent
+                         * 5 - le marche enregistre une commande souhaité du client non disponible, pour
+                         * que les PONE la produisent
                          */
 
                         if (energie.getQuantite() >= obj_e.getQuantite()
@@ -263,7 +261,7 @@ public class ThreadMarcheGros extends Thread {
                                 energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
                                 obj_energie.put(String.valueOf(i), energie.toJSON());
                             }
-                        }else{
+                        } else {
                             achatValide = false;
                         }
                     }
@@ -293,26 +291,28 @@ public class ThreadMarcheGros extends Thread {
                         }
                     } else {
                         try {
-                        // Création de la socket pour le Tare
-                        DatagramSocket socket = new DatagramSocket();
-                        // Création du message à envoyer
-                        JSONObject energie = obj_e.toJSON();
-                        String msg = "ACHAT EN ATTENTE";
-                        byte[] tampon = msg.getBytes();
-                        DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
-                                msgRecu.getAddress(), msgRecu.getPort());
-                        // Envoi du message
-                        socket.send(msgEnvoi);
-                        socket.close();
+                            // Création de la socket pour le Tare
+                            DatagramSocket socket = new DatagramSocket();
+                            // Création du message à envoyer
+                            JSONObject energie = obj_e.toJSON();
+                            String msg = "ACHAT EN ATTENTE";
+                            byte[] tampon = msg.getBytes();
+                            DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
+                                    msgRecu.getAddress(), msgRecu.getPort());
+                            // Envoi du message
+                            socket.send(msgEnvoi);
+                            socket.close();
                         } catch (IOException e) {
                             gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
                                     e);
                             System.exit(0);
                         }
-                        //enregistrer la commande souhaité du client non disponible dans un fichhier json, pour que les PONE la produisent
+                        // enregistrer la commande souhaité du client non disponible dans un fichhier
+                        // json, pour que les PONE la produisent
                         String dossierCourant1 = System.getProperty("user.dir");
-                        String cheminFichier1 = dossierCourant1 + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
-                        gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
+                        String cheminFichier1 = dossierCourant1
+                                + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
+                        // gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
                         File file1 = new File(cheminFichier1);
                         try {
                             if (!file1.exists() || file1.length() == 0) {
@@ -326,17 +326,22 @@ public class ThreadMarcheGros extends Thread {
                             String ligne1 = bufferedReader1.readLine();
                             bufferedReader1.close();
                             fileReader1.close();
-                            JSONObject obj_energie1 = new JSONObject(ligne1);
-                            int nbEnergie1 = obj_energie1.length();
-                            //JSONObject obj_e1 = new JSONObject(obj_e.toJSON());
-                            //obj_e1.put("prix", (int) (Math.random() * 9000) / 100.0 + 100);
-                            obj_energie1.put(String.valueOf(nbEnergie1 + 1), obj_e.toJSON());
+                            JSONObject all_energy = new JSONObject(ligne1);
+                            int nb_energy = all_energy.length();
+
+                            JSONObject json_obj_e = obj_e.toJSON();
+                            json_obj_e.put("prix", (int) (Math.random() * 9000) / 100.0 + 100);
+
+                            all_energy.put(String.valueOf(nb_energy + 1),
+                                    (Energie.fromJSON(json_obj_e.toString())).toJSON());
+
                             FileWriter fileWriter1 = new FileWriter(file1);
-                            fileWriter1.write(obj_energie1.toString());
+                            fileWriter1.write(all_energy.toString());
                             fileWriter1.close();
                         } catch (IOException e) {
                             gestionMessage
-                                    .afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
+                                    .afficheMessage(
+                                            "Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
                         }
                     }
                 } catch (IOException e) {

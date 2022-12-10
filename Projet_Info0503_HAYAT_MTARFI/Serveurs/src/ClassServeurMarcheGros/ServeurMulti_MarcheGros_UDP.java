@@ -70,7 +70,7 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
             try {
                 socket_invite = new DatagramSocket(socketClient);
             } catch (SocketException e) {
-                gestionMessage.afficheMessage("Erreur lors de la création du socket : " + e);
+                gestionMessage.afficheMessage("Erreur lors de la création du socket_invite : " + e);
                 System.exit(0);
             }
 

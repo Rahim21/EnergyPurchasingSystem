@@ -197,6 +197,7 @@ class TareHandler implements HttpHandler {
             }
 
             gestionMessage.afficheMessage("Envoie de réponse au Revendeur  " + donnees);
+            this.reponseHTTP = "";
 
             // Fermeture de la socket
             socket.close();

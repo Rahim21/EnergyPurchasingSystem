@@ -3,79 +3,9 @@
         {
             "idProprietaire": 2,
             "type": "ELERCTRICITE",
-            "origine": "FRANCE",
-            "quantite": 99,
-            "budget": 9999
-        },
-        {
-            "idProprietaire": 2,
-            "type": "GAZ_NATUREL",
-            "origine": "ALBANIE",
-            "quantite": 999,
-            "budget": 9
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP98",
-            "origine": "BELGIQUE",
-            "quantite": 999,
-            "budget": 99
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP98",
-            "origine": "ARMENIE",
-            "quantite": 999,
-            "budget": 78
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "MAROC",
-            "quantite": 9999,
-            "budget": 75
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "MAROC",
-            "quantite": 7887,
-            "budget": 99
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "GUATEMALA",
-            "quantite": 999,
-            "budget": 99
-        },
-        {
-            "idProprietaire": 2,
-            "type": "ESSENCE",
-            "origine": "FRANCE",
-            "quantite": 9999,
-            "budget": 88
-        },
-        {
-            "idProprietaire": 2,
-            "type": "DIESEL",
-            "origine": "FRANCE",
-            "quantite": 9999,
-            "budget": 64
-        },
-        {
-            "idProprietaire": 2,
-            "type": "SUPERCARBURANTS_SP95",
-            "origine": "ALLEMAGNE",
-            "quantite": 999,
-            "budget": 9
-        },
-        {
-            "idProprietaire": 2,
-            "type": "GAZ_NATUREL",
-            "origine": "ALLEMAGNE",
-            "quantite": 9999,
-            "budget": 9
+            "origine": "ALGERIE",
+            "quantite": 50,
+            "budget": 2000
         }
     ]
 }

@@ -15,7 +15,8 @@
                 $mes_enrgies = json_decode($energies, true);
                 if ($mes_enrgies != null) {
                     $taille = count($mes_enrgies);
-                    foreach ($mes_enrgies as $key => $value) :
+                    for ($i = count($mes_enrgies); $i > 0; $i--) {
+                        $value = $mes_enrgies[$i];
 
                 ?>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
@@ -26,9 +27,14 @@
                                 <span class="mb-2 text-xs">Quantité disponible: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['quantite'] ?></span> kWh</span>
                                 <span class="mb-2 text-xs">Prix: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['prix'] ?></span> €/MWh</span> <!-- entre 30 et 300 €/MWh -->
                                 <span class="mb-2 text-xs">Id Producteur: <span class="text-dark font-weight-bold ms-sm-2"><?= $value['idProprietaire'] ?></span></span>
+                                <?php
+                                if (array_key_exists('idClient', $value)) {
+                                    echo '<span class="mb-2 text-xs client">Précommande du Client ID: <span class="text-dark font-weight-bold ms-sm-2">' . $value['idClient'] . '</span></span>';
+                                } ?>
+
                             </div>
                         </li>
-                <?php endforeach;
+                <?php }
                 } else {
                     echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
               <div class="d-flex flex-column">

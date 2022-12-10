@@ -5,8 +5,10 @@ import org.json.JSONObject;
 public class Pone {
     private int idPone;
     private String nom;
+    // ajouter un type d'energie
 
     public Pone(int idPone, String nom) {
+        // this.idPone = (int) (Math.random() * 1000);
         this.idPone = idPone;
         this.nom = nom;
     }
