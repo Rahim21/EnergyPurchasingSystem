@@ -4,7 +4,10 @@ import ClassEnergie.Energie;
 import ClassEnergie.Enum.Pays;
 import ClassEnergie.Enum.TypeEnergie;
 import Config.Messenger;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -44,9 +47,11 @@ public class ClientPONE_UDP implements Runnable {
     // 3.Envoie et reception avec la socket PONE
     // 4.Fermer la socket PONE
     public void run() {
+        DatagramSocket socket = null;
+        boolean infini = true;
+        while (infini) {
         Pone pone = new Pone(0, nomPONE);
         // Création de la socket
-        DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
         } catch (SocketException e) {
@@ -72,78 +77,111 @@ public class ClientPONE_UDP implements Runnable {
             System.exit(0);
         }
 
-        // Création de l'energie
-        Energie obj_e = genererEnergie();
-        gestionMessage.afficheMessage("Energie générée : " + obj_e);
 
-        // Transformation en tableau d'octets
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(obj_e);
-        } catch (IOException e) {
-            gestionMessage.afficheMessage("Erreur lors de la sérialisation : " + e);
-            System.exit(0);
-        }
+            // SI un client souhaite une énergie particulière (depuis le fichier
+            // attenteCommande.json)
+            // si le fichier attente_energie.json existe et contient une énergie il faut créer l'energie et l'envoyer au serveur
+            String dossierCourant1 = System.getProperty("user.dir");
+            String cheminFichier1 = dossierCourant1 + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
+            gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
+            File file1 = new File(cheminFichier1);
+            //si le fichier existe
+            if (file1.length() != 0)  {
+                    //on lit le fichier
+                    try {
+                        FileReader fr = new FileReader(file1);
+                        BufferedReader br = new BufferedReader(fr);
+                        String ligne = br.readLine();
+                        gestionMessage.afficheMessage("Ligne lue : " + ligne);
+                        //on crée l'energie
+                        Energie energie_demandee = Energie.fromJSON(ligne);
+                        gestionMessage.afficheMessage("Energie demandée : " + energie_demandee);
+                        //on l'envoie au serveur
+                        // Transformation en tableau d'octets
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        try {
+                            ObjectOutputStream oos = new ObjectOutputStream(baos);
+                            oos.writeObject(energie_demandee);
+                        } catch (IOException e) {
+                            gestionMessage.afficheMessage("Erreur lors de la sérialisation : " + e);
+                            System.exit(0);
+                        }
 
-        // Création et envoi du segment UDP
-        try {
-            byte[] donnees = baos.toByteArray();
-            InetAddress adresse = InetAddress.getByName("localhost");
-            DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
-                    adresse, portPONE_UDP);
-            socket.send(msg);
-            gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
-        } catch (UnknownHostException e) {
-            gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
-            System.exit(0);
-        } catch (IOException e) {
-            gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
-            System.exit(0);
-        }
+                        // Création et envoi du segment UDP
+                        try {
+                            byte[] donnees = baos.toByteArray();
+                            InetAddress adresse = InetAddress.getByName("localhost");
+                            DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
+                                    adresse, portPONE_UDP);
+                            socket.send(msg);
+                            gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
+                        } catch (UnknownHostException e) {
+                            gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
+                            System.exit(0);
+                        }
+                        //on vide le fichier
+                        FileWriter fw = new FileWriter(file1);
+                        fw.write("");
+                        fw.close();
+                    } catch (IOException e) {
+                        gestionMessage.afficheMessage("Erreur lors de la lecture du fichier : " + e);
+                        System.exit(0);
+                    }
+            }else{
+            
 
-        // // la reception de l'objet Energie envoyé par le serveur
-        // Energie energie_manquant = null;
-        // DatagramPacket msg = null;
-        // try {
-        // byte[] donnees = new byte[1024];
-        // msg = new DatagramPacket(donnees, donnees.length);
-        // socket.receive(msg);
-        // energie_manquant = Energie.fromJSON(msg.toString());
-        // gestionMessage.afficheMessage("Réception de l'objet Energie du serveur.");
-        // } catch (IOException e) {
-        // gestionMessage.afficheMessage("Erreur lors de la réception du message : " +
-        // e);
-        // System.exit(0);
-        // }
+            // Créer une énergie avec les paramètres du fichier attenteCommande.json
+            // Energie energie_demandee = Energie.fromJSON(fichier_attenteCommande.json);
+            // et l'envoyer au serveur
+            // SINON
+            // Création de l'energie
+            Energie obj_e = genererEnergie();
+            gestionMessage.afficheMessage("Energie générée : " + obj_e);
 
-        // // rebond de l'objet Energie
-        // try {
-        // byte[] donnees = energie_manquant.toJSON().toString().getBytes();
-        // InetAddress adresse = InetAddress.getByName("localhost");
-        // msg = new DatagramPacket(donnees, donnees.length,
-        // adresse, portPONE_UDP);
-        // socket.send(msg);
-        // gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
-        // } catch (UnknownHostException e) {
-        // gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " +
-        // e);
-        // System.exit(0);
-        // } catch (IOException e) {
-        // gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
-        // System.exit(0);
-        // }
+            // Transformation en tableau d'octets
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(baos);
+                oos.writeObject(obj_e);
+            } catch (IOException e) {
+                gestionMessage.afficheMessage("Erreur lors de la sérialisation : " + e);
+                System.exit(0);
+            }
 
+            // Création et envoi du segment UDP
+            try {
+                byte[] donnees = baos.toByteArray();
+                InetAddress adresse = InetAddress.getByName("localhost");
+                DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
+                        adresse, portPONE_UDP);
+                socket.send(msg);
+                gestionMessage.afficheMessage("Envoi de l'objet Energie au serveur.");
+            } catch (UnknownHostException e) {
+                gestionMessage.afficheMessage("Erreur lors de la création de l'adresse : " + e);
+                System.exit(0);
+            } catch (IOException e) {
+                gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
+                System.exit(0);
+            }
+            // temps 20-60 secondes entre chaque envoi d'energie
+                int temps = (int) (Math.random() * 40000 + 20000);
+                gestionMessage.afficheMessage("Temps d'attente : " + temps + "ms");
+                
+                try {
+                    Thread.sleep(temps);
+                } catch (InterruptedException e) {
+                    gestionMessage.afficheMessage("Erreur lors du sleep : " + e);
+                    System.exit(0);
+                }
+            }
+    }
         // Fermeture de la socket
         socket.close();
         gestionMessage.afficheMessage("Fermeture de la socket.");
     }
 
     public static Energie genererEnergie() {
-        // String[] liste_producteur = { "EDF", "Total", "Engie", "Uniper", "EDP",
-        // "Enel", "RWE", "Vattenfall", "Tepco",
-        // "GDF",
-        // "Iberdrola" };
+        // String[] liste_producteur = {"EDF","Total","Engie","Uniper","EDP","Enel","RWE","Vattenfall","Tepco","GDF","Iberdrola"};
 
         int producteur = (int) (Math.random() * 1000); // aléatoire pour le test
         Pays pays = Pays.values()[(int) (Math.random() * Pays.values().length - 1)]; // depuis le fichier Enum/Pays.java
@@ -152,9 +190,7 @@ public class ClientPONE_UDP implements Runnable {
                                                                                                           // Enum/TypeEnergie.java
         int quantite = (int) (Math.random() * 900) + 100;
 
-        // prix entre 10 et 100
-        int prixEntier = (int) ((Math.random() * 900) + 100) * 100;
-        double prix = prixEntier / 100.0;
+        double prix = (int) (Math.random() * 9000) / 100.0 + 100; 
 
         return new Energie(producteur, type.toString(), pays.toString(), quantite, prix, false);
     }

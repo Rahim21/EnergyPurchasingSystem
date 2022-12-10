@@ -132,7 +132,7 @@ class TareHandler implements HttpHandler {
         }
 
         // si reponseHTTP n'est pas null [si le revendeur a répondu]
-        if (reponseHTTP != null) {
+        if (reponseHTTP != null) { // verifier si la requete : COMMANDE ou VERIF_CERTIFICAT
             // Création de l'Energie
             JSONObject obj = new JSONObject(reponseHTTP);
             JSONObject commande = obj.getJSONObject("commande");

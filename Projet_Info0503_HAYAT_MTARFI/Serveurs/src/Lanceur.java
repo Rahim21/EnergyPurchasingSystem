@@ -1,9 +1,7 @@
 import Config.Configuration;
 import ClassServeurTARE.ServeurTare_HTTP;
-import ClassServeurMarcheGros.ServeurMarcheGros_UDP;
 import ClassServeurMarcheGros.ServeurMulti_MarcheGros_UDP;
 import ClassClientPONE.ClientPONE_UDP;
-import ClassServeurAMI.ServeurAMI_TCP;
 import ClassServeurAMI.ServeurMulti_AMI_TCP;
 
 /**
@@ -34,16 +32,11 @@ public class Lanceur {
 
         Configuration config = new Configuration(args[0]);
 
-        // String adresseServeurTCP = config.getString("adresseServeurTCP");
-        // int portServeurTCP = config.getInt("portServeurTCP");
         int portTARE = config.getInt("portTARE");
-
-        // int portTARE_UDP = config.getInt("portTARE_UDP");
         int portPONE_UDP_1 = config.getInt("portPONE_UDP_1");
         int portPONE_UDP_2 = config.getInt("portPONE_UDP_2");
         int portMarche_UDP = config.getInt("portMarche_UDP");
         int portAMI_TCP = config.getInt("portAMI_TCP");
-        // int portAMI_TCPchiffre = config.getInt("portAMI_TCPchiffre");
 
         java.util.ArrayList<Thread> mesServices = new java.util.ArrayList<Thread>();
 
@@ -51,13 +44,16 @@ public class Lanceur {
         // créer un Thread
         String[] nom = { "Souhail", "Rahim", "Sami", "Walid", "Fayssal", "Leo", "Corentin", "Dilara", "Mikael",
                 "Quentin" }; // 10 noms => TARE, PONE
-        
-        // boucle pour créer des tarés, leur donné un id, pour l'entête de la requête HTTP /tare{id}
+
+        // boucle pour créer des tarés, leur donné un id, pour l'entête de la requête
+        // HTTP /tare{id}
         mesServices.add(new Thread(new ServeurTare_HTTP(portTARE, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // TARE
         mesServices.add(new Thread(new ServeurMulti_MarcheGros_UDP(portMarche_UDP, portAMI_TCP))); // MARCHE GROS
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 1
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP,nom[(int) (Math.random() * 10)]))); // PONE 2
         mesServices.add(new Thread(new ServeurMulti_AMI_TCP(portAMI_TCP))); // AMI
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
+                                                                                                                       // 1
+        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
+                                                                                                                       // 2
 
         java.util.Iterator<Thread> it = mesServices.iterator();
         // Cela fonctionne ici car le serveur est démarré avant le client

@@ -52,9 +52,23 @@ class Revendeur implements JsonSerializable
         echo "Affichage côté revendeur PHP : <br><br>";
         if (isset($revendeur)) {
             $revendeur->afficherCommandes();
+            $revendeur->updateCommande();
         }
         // dd($revendeur);
         // action du revendeur après réception de la réponse depuis le Marche de Gros [à faire]
+    }
+    // Mettre à jour la commande avec le certificat et le code de suivi ?
+    public function updateCommande()
+    {
+        // Dans le fichier Commande.json, mettre à jour la commande du client avec l'id de la session avec $_SESSION['auth']
+        // appel CommandeController->updateCommande()
+        // App\CommandeController::updateCommande($_SESSION['auth'], $this->commande->getCodeDeSuivi());
+
+    }
+    
+    public function verif_certificat()
+    {
+        // Le client envoie le CodeDeSuivi ? Certificat ? au serveur
     }
 
     public function afficherCommandes()
@@ -65,6 +79,11 @@ class Revendeur implements JsonSerializable
             // }
             $this->commande->afficher();
         }
+    }
+
+    public function getCodeDeSuivi()
+    {
+        return $this->commande->getCodeDeSuivi();
     }
 
     // retourne un array ?

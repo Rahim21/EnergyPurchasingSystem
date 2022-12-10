@@ -59,4 +59,13 @@ class CommandeController
         }
         return null;
     }
+
+    public function updateCommande($id,$codeDeSuivi)
+    {
+        // $id : id du propriétaire de la commande
+        // $codeDeSuivi : code de suivi de la commande
+        // mettre à jour le statut de la commande
+
+        // while infini bloquant dans le revendeur php au http ? pour attendre jusqu'à reception ?
+    }
 }

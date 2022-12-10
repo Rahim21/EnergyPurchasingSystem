@@ -31,12 +31,12 @@ public class Energie implements Serializable {
      * Constructeur par initialisation
      * 
      * @param idProprietaire l'id du propriétaire de l'énergie
-     * @param type le type de l'énergie
-     * @param origine l'origine de l'énergie
-     * @param quantite la quantité de l'énergie
-     * @param prix le prix de l'énergie
-     * @param budget le budget de client
-     * @param client client/pone
+     * @param type           le type de l'énergie
+     * @param origine        l'origine de l'énergie
+     * @param quantite       la quantité de l'énergie
+     * @param prix           le prix de l'énergie
+     * @param budget         le budget de client
+     * @param client         client/pone
      */
     public Energie(int idProprietaire, String type, String origine, int quantite, double monnaie, boolean client) {
         this.idProprietaire = idProprietaire;
@@ -160,7 +160,7 @@ public class Energie implements Serializable {
         mon_obj.put("type", type);
         mon_obj.put("origine", origine);
         mon_obj.put("quantite", quantite);
-        if(client){
+        if (client) {
             mon_obj.put("budget", budget);
         } else {
             mon_obj.put("prix", prix);
@@ -176,7 +176,7 @@ public class Energie implements Serializable {
         int quantite = object.getInt("quantite");
         double monnaie;
         boolean client = false;
-        if(object.has("prix")){
+        if (object.has("prix")) {
             double prix = object.getDouble("prix");
             return new Energie(idProprietaire, type, origine, quantite, prix, false);
         }

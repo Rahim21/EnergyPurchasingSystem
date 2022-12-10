@@ -11,6 +11,8 @@ class Commande implements JsonSerializable
     private $origine;
     private $quantite;
     private $budget;
+    private $codeDeSuivi;
+    private $date = null;
 
     public function __construct(int $idProprietaire, string $type, string $origine, int $quantite, float $budget)
     {
@@ -19,6 +21,10 @@ class Commande implements JsonSerializable
         $this->origine = $origine;
         $this->quantite = $quantite;
         $this->budget = $budget;
+        $this->codeDeSuivi = "En Attente de traitement";
+        if ($this->date == null) {
+            $this->date = date("d/m/Y");
+        }
     }
 
     public function afficher()
@@ -28,6 +34,16 @@ class Commande implements JsonSerializable
         echo "Quantité désirée: " . $this->quantite . "<br>";
         echo "Origine géographique : " . $this->origine . "<br>";
         echo "Budget maximum allouable à la commande: " . $this->budget . "<br><br>";
+    }
+
+    public function getCodeDeSuivi()
+    {
+        return $this->codeDeSuivi;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
     }
 
     // type de retour array ?
