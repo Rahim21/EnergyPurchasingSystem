@@ -230,7 +230,7 @@ $auth->requireRole('CLIENT');
                                                 <span class="mb-2 text-xs">Quantité: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['quantite'] ?></span> kWh</span>
                                                 <span class="mb-2 text-xs">Buget : <span class="text-dark font-weight-bold ms-sm-2"><?= $commande['budget'] ?></span> €</span> <!-- entre 30 et 300 €/MWh -->
                                                 <span class="mb-2 text-xs">Date de commande: <span class="text-dark font-weight-bold ms-sm-2"><?= $commande_tmp->getDate(); ?></span></span>
-                                                <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold"><?= $commande_tmp->getCodeDeSuivi(); ?></span></span>
+                                                <span class="text-xs">Code de suivi: <span class="text-dark ms-sm-2 font-weight-bold"><?= $commande_tmp->encode($commande_tmp); ?></span></span>
                                             </div>
                                             <div class="ms-auto text-end">
                                                 <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>

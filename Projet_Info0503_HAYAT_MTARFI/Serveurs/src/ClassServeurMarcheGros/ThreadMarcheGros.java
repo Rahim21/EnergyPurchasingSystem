@@ -328,6 +328,8 @@ public class ThreadMarcheGros extends Thread {
                             fileReader1.close();
                             JSONObject obj_energie1 = new JSONObject(ligne1);
                             int nbEnergie1 = obj_energie1.length();
+                            //JSONObject obj_e1 = new JSONObject(obj_e.toJSON());
+                            //obj_e1.put("prix", (int) (Math.random() * 9000) / 100.0 + 100);
                             obj_energie1.put(String.valueOf(nbEnergie1 + 1), obj_e.toJSON());
                             FileWriter fileWriter1 = new FileWriter(file1);
                             fileWriter1.write(obj_energie1.toString());
