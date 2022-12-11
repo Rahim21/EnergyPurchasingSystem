@@ -9,7 +9,7 @@ class Revendeur implements JsonSerializable
     private $nom;
     private $adresse;
     // private $commandes;
-    private $commande;
+    public $commande;
 
     public function __construct($nom = "Johne Doe", $adresse = "Rue Boulevard Port-Royal")
     {
@@ -36,7 +36,7 @@ class Revendeur implements JsonSerializable
             [
                 'method'  => 'POST',
                 'header'  => 'Content-type: application/x-www-form-urlencoded',
-                'content' => $data
+                'content' => 'COMMANDE:::' . $data
             ]
         ];
 
@@ -48,24 +48,29 @@ class Revendeur implements JsonSerializable
         // dd($jsonTexte);
         // fromJSON pour créer un objet de type Revendeur ensuite on affiche les commandes
 
-        $revendeur = Revendeur::fromJSON($jsonTexte);
-        echo "Affichage côté revendeur PHP : <br><br>";
-        if (isset($revendeur)) {
-            $revendeur->afficherCommandes();
-            $revendeur->updateCommande();
-        }
+        // $revendeur = Revendeur::fromJSON($jsonTexte);
+        // echo "Affichage côté revendeur PHP : <br><br>";
+        // if (isset($revendeur)) {
+        //     $revendeur->afficherCommandes();
+        //     $revendeur->updateCommande();
+        // }
+
         // dd($revendeur);
         // action du revendeur après réception de la réponse depuis le Marche de Gros [à faire]
     }
     // Mettre à jour la commande avec le certificat et le code de suivi ?
     public function updateCommande()
     {
+
+        // suppression de la commande du revendeur
+        $this->commande = null;
+
         // Dans le fichier Commande.json, mettre à jour la commande du client avec l'id de la session avec $_SESSION['auth']
         // appel CommandeController->updateCommande()
         // App\CommandeController::updateCommande($_SESSION['auth'], $this->commande->getCodeDeSuivi());
 
     }
-    
+
     public function verif_certificat()
     {
         // Le client envoie le CodeDeSuivi ? Certificat ? au serveur
@@ -116,5 +121,27 @@ class Revendeur implements JsonSerializable
             return $revendeur;
         }
         return null;
+    }
+
+    public static function envoyerRequete($donnee)
+    {
+        $data = urlencode(json_encode($donnee));
+
+        $options = [
+            'http' =>
+            [
+                'method'  => 'POST',
+                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'content' => 'VERIFICATION:::' . $data
+            ]
+        ];
+
+        // Envoi de la requête et lecture du JSON reçu
+        // URL : l'adresse locale vers tare.html
+        $URL = "http://localhost:8080/tare.html";
+        $contexte  = stream_context_create($options);
+        $jsonTexte = @file_get_contents($URL, false, $contexte);
+        $resultat_certif = substr($jsonTexte, 0, strpos($jsonTexte, "\x00"));
+        return $resultat_certif;
     }
 }

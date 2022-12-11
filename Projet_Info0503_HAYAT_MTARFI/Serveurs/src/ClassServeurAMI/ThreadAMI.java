@@ -56,39 +56,80 @@ public class ThreadAMI extends Thread {
 
         String message = "";
 
-            // ----- Lecture du message formaté JSON {"prix":?} -----
-            try {
-                message = input.readLine();
-            } catch (IOException e) {
-                gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
-                System.exit(0);
-            }
+        // ----- Lecture du message formaté JSON -----
+        try {
+            message = input.readLine();
+        } catch (IOException e) {
+            gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
+            System.exit(0);
+        }
 
-            // récupération des valeurs prix et quantité depuis le message
-            String prix = message.split(":")[1];
+        // récupération des valeurs prix et quantité depuis le message
+        Energie obj_e = Energie.fromJSON(message);
+
+        // ----- Certification CRADO -----
+        boolean certif = false;
+        String resultatCertif = "AUCUN CERTIFICAT";
+        // chemin du dossier courant
+        String ami_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurAMI/";
+        String crado_folder = ami_folder+"CRADO/CRADO-"
+                + obj_e.getCodeDeSuivie()
+                + ".bin";
+        String privee = ami_folder+"privee.bin";
+        String publique = ami_folder+"publique.bin";
+
+        if (obj_e.getCertificat() != null) { // ----- VERIFICATION CERTIFICAT D'UNE ENERGIE DU CLIENT -----
+            // ----- VERIFICATION CERTIFICAT -----
+            resultatCertif = RSA.VerifierSignatureRSA_JSON(obj_e.toJSON().toString(), crado_folder, publique);
+            // ----- ENVOI DE L'ENERGIE -----
+            gestionMessage.afficheMessage(resultatCertif+" -> ClientID: "+obj_e.getIdProprietaire()+", Energie: "+obj_e.getCodeDeSuivie());
+            output.println(resultatCertif);
+            
+        } else { // ----- ACHAT D'ENERGIE + AJOUT CERTIFICAT -----
+
+            double prix = obj_e.getPrix();
             gestionMessage.afficheMessage("[Reçu] prix: " + prix);
 
             // Envoi de du Résultat plafonné à 180 euros le mégawattheure (MWh)
             // resultat "ACCEPT" ou "REFUSE"
-            String resultat = (Double.parseDouble(prix) > 180) ? "REFUSE"
+            String resultat = (prix > 180) ? "REFUSE"
                     : "ACCEPT";
             gestionMessage.afficheMessage("Envoi requête au Marche : " + resultat);
             output.println(resultat);
 
-            // ----- Lecture du message crypté -----
-            // byte[] data = null;
-            // try {
-            //     message = input.readLine();
-            //     data = java.util.Base64.getDecoder().decode(message);
-            //     data = ChiffrementAES.dechiffrer("1234567890123456", data);
-            //     message = new String(data);
-            //     gestionMessage.afficheMessage("Message reçu : " + message);
-            //     Energie obj_e = Energie.fromJSON(message);
-            //     gestionMessage.afficheMessage("Energie reçue : " + obj_e);
-            // } catch (IOException e) {
-            //     gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
-            //     System.exit(0);
-            // }
+            if (resultat.equals("ACCEPT")) {
+                // ----- GENERATION CERTIFICAT -----
+                RSA.GenererClesRSA(privee, publique);
+                String obj_json = obj_e.toJSON().toString();
+                RSA.SignerFichierRSA_JSON(privee, obj_json, crado_folder);
+                resultatCertif = RSA.VerifierSignatureRSA_JSON(obj_json, crado_folder, publique);
+
+                if (resultatCertif.equals("CERTIFICATION VALIDE")) {
+                    certif = true;
+                }
+                gestionMessage.afficheMessage(
+                        "Certification " + (certif ? "REUSSI, Signature ajoutée" : "ECHOUEE") + " pour : " + obj_e.getCodeDeSuivie());
+            }
+
+        }
+
+
+        
+
+        // ----- Lecture du message crypté -----
+        // byte[] data = null;
+        // try {
+        // message = input.readLine();
+        // data = java.util.Base64.getDecoder().decode(message);
+        // data = ChiffrementAES.dechiffrer("1234567890123456", data);
+        // message = new String(data);
+        // gestionMessage.afficheMessage("Message reçu : " + message);
+        // Energie obj_e = Energie.fromJSON(message);
+        // gestionMessage.afficheMessage("Energie reçue : " + obj_e);
+        // } catch (IOException e) {
+        // gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
+        // System.exit(0);
+        // }
 
         // Fermeture des flux et des sockets
         try {

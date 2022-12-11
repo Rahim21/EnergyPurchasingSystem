@@ -46,6 +46,7 @@ class TareHandler implements HttpHandler {
 
     public void handle(HttpExchange t) {
 
+        this.reponseHTTP = "";
         URI requestedUri = t.getRequestURI();
         String query = requestedUri.getRawQuery();
 
@@ -68,14 +69,14 @@ class TareHandler implements HttpHandler {
 
         // Affichage des données
         if (query == null)
-            reponseHTTP += "Aucune";
+            this.reponseHTTP += "Aucune";
         else {
             try {
                 query = URLDecoder.decode(query, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 query = "";
             }
-            reponseHTTP += query;
+            this.reponseHTTP += query;
         }
 
         // // Envoi de l'en-tête Http
@@ -98,7 +99,7 @@ class TareHandler implements HttpHandler {
         // gestionMessage.afficheMessage("Erreur lors de l'envoi du corps : " + e);
         // }
 
-        gestionMessage.afficheMessage("Lu  " + reponseHTTP);
+        gestionMessage.afficheMessage("Lu  " + this.reponseHTTP);
         tare_UDP(t);
     }
 
@@ -132,11 +133,22 @@ class TareHandler implements HttpHandler {
         }
 
         // si reponseHTTP n'est pas null [si le revendeur a répondu]
-        if (reponseHTTP != null) { // verifier si la requete : COMMANDE ou VERIF_CERTIFICAT
+        if (this.reponseHTTP != null) {
             // Création de l'Energie
-            JSONObject obj = new JSONObject(reponseHTTP);
+
+            String[] messages = this.reponseHTTP.split(":::");
+            String type_requete = messages[0]; // COMMANDE ou VERIFICATION
+            String requete = messages[1];   // JSON
+        
+            JSONObject obj = new JSONObject(requete);
+            Energie obj_e = null;
+            if(type_requete.equals("COMMANDE")) {
             JSONObject commande = obj.getJSONObject("commande");
-            Energie obj_e = Energie.fromJSON(commande.toString());
+            obj_e = Energie.fromJSON(commande.toString());
+            } else if(type_requete.equals("VERIFICATION")) {
+                obj.put("Certificat", "ATTENTE DE VERIFICATION");
+                obj_e = Energie.fromJSON(obj.toString());
+            }
             gestionMessage.afficheMessage("Energie récupéré du Revendeur : " + obj_e);
 
             // Transformation en tableau d'octets

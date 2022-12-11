@@ -74,9 +74,15 @@ public class ThreadMarcheGros extends Thread {
             gestionMessage.afficheMessage("Association des flux impossible : " + e);
             System.exit(0);
         }
-        String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
-        output.println(reponse);
-        gestionMessage.afficheMessage("Réponse envoyée au client AMI : " + reponse);
+        // String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
+        if(obj_e.getCertificat() != null){
+            JSONObject obj = new JSONObject(obj_e.toJSON().toString());
+            obj.put("Certificat", obj_e.getCertificat());
+            output.println(obj.toString());
+        } else {
+            output.println(obj_e.toJSON());
+        }
+        gestionMessage.afficheMessage("Demande de vérification à l'AMI pour : " + obj_e.getCodeDeSuivie());
 
         // reception de la réponse du client AMI
         String reponseClient = null;
@@ -177,8 +183,6 @@ public class ThreadMarcheGros extends Thread {
                 System.exit(0);
             }
         } else if (client_invitation.equals("TARE")) {
-            // "TARE:port:COMMANDE"
-            // "TARE:port:VERIF_CERTIFICAT"
 
             try {
                 DatagramPacket msgRecu = null;
@@ -199,154 +203,173 @@ public class ThreadMarcheGros extends Thread {
                 gestionMessage.afficheMessage("Recu energie : " + CodeDeSuivi.encoder(obj_e));
                 // Affichage de l'objet reçu
                 gestionMessage.afficheMessage("Recu de la demande : " + obj_e.toString());
-                socket_invite.close();
-                // verifier si l'energie est dans le fichier json
-                boolean achatValide = false;
-                try {
-                    if (!file.exists() || file.length() == 0) {
-                        file.createNewFile();
+
+                // si obj_e à un Certificat
+                if (obj_e.getCertificat() != null) {
+
+                    // CAS : VERIFICATION d'un certificat d'une énergie
+
+                    String reponseCertificationAMI = verificationAMI(obj_e);
+                    gestionMessage.afficheMessage("Certification ["+obj_e.getCodeDeSuivie()+"] : "+reponseCertificationAMI);
+
+                    // envoyer le message au Tare : CERTIFICATION
+                    byte[] tampon = reponseCertificationAMI.getBytes();
+                    DatagramPacket msg = new DatagramPacket(tampon, tampon.length, msgRecu.getAddress(), msgRecu.getPort());
+                    socket_invite.send(msg);
+                    socket_invite.close();
+
+                } else {
+                    socket_invite.close();
+                    // CAS : ACHAT d'une énergie
+                    
+                    // verifier si l'energie est dans le fichier json
+                    boolean achatValide = false;
+                    try {
+                        if (!file.exists() || file.length() == 0) {
+                            file.createNewFile();
+                            FileWriter fileWriter = new FileWriter(file);
+                            fileWriter.write("{}");
+                            fileWriter.close();
+                        }
+                        FileReader fileReader = new FileReader(file);
+                        BufferedReader bufferedReader = new BufferedReader(fileReader);
+                        // FileWriter fileWriter = new FileWriter(file);
+                        String ligne = bufferedReader.readLine();
+                        bufferedReader.close();
+                        fileReader.close();
+                        JSONObject obj_energie = new JSONObject(ligne);
+                        int nbEnergie = obj_energie.length();
+                        for (int i = 1; i <= nbEnergie; i++) {
+                            JSONObject obj = obj_energie.getJSONObject(String.valueOf(i));
+                            Energie energie = Energie.fromJSON(obj.toString());
+                            /*
+                            * on verifie si le type d'energie est le meme et l'origine est le meme et la
+                            * quantite est inferieur ou egale et si le prix * quantite est inferieur ou
+                            * egale au budget de client
+                            *
+                            * 1 - type,origine,quantite,prix de energie et obj_e sont les memes : normal
+                            * 2- type = SANS_CONTRAINTE le reste est normal
+                            * 3 - origine = SANS_CONTRAINTE le reste est normal
+                            * 4 - type et origine = SANS_CONTRAINTE
+                            * 5 - le marche enregistre une commande souhaité du client non disponible, pour
+                            * que les PONE la produisent
+                            */
+
+                            if (energie.getQuantite() >= obj_e.getQuantite()
+                                    && energie.getPrix() * obj_e.getQuantite() <= obj_e.getBudget()) {
+
+                                if (energie.getType().equals(obj_e.getType())
+                                        && energie.getOrigine().equals(obj_e.getOrigine())) {
+                                    achatValide = true;
+                                    // on met a jour le fichier json
+                                    energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
+                                    obj_energie.put(String.valueOf(i), energie.toJSON());
+                                } else if (obj_e.getType().equals("SANS_CONTRAINTE")
+                                        && energie.getOrigine().equals(obj_e.getOrigine())) {
+                                    achatValide = true;
+                                    // on met a jour le fichier json
+                                    energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
+                                    obj_energie.put(String.valueOf(i), energie.toJSON());
+                                } else if (energie.getType().equals(obj_e.getType())
+                                        && obj_e.getOrigine().equals("SANS_CONTRAINTE")) {
+                                    achatValide = true;
+                                    // on met a jour le fichier json
+                                    energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
+                                    obj_energie.put(String.valueOf(i), energie.toJSON());
+                                } else if (obj_e.getType().equals("SANS_CONTRAINTE")
+                                        && obj_e.getOrigine().equals("SANS_CONTRAINTE")) {
+                                    achatValide = true;
+                                    // on met a jour le fichier json
+                                    energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
+                                    obj_energie.put(String.valueOf(i), energie.toJSON());
+                                }
+                            } else {
+                                achatValide = false;
+                            }
+                        }
                         FileWriter fileWriter = new FileWriter(file);
-                        fileWriter.write("{}");
+                        fileWriter.write(obj_energie.toString());
                         fileWriter.close();
-                    }
-                    FileReader fileReader = new FileReader(file);
-                    BufferedReader bufferedReader = new BufferedReader(fileReader);
-                    // FileWriter fileWriter = new FileWriter(file);
-                    String ligne = bufferedReader.readLine();
-                    bufferedReader.close();
-                    fileReader.close();
-                    JSONObject obj_energie = new JSONObject(ligne);
-                    int nbEnergie = obj_energie.length();
-                    for (int i = 1; i <= nbEnergie; i++) {
-                        JSONObject obj = obj_energie.getJSONObject(String.valueOf(i));
-                        Energie energie = Energie.fromJSON(obj.toString());
-                        /*
-                         * on verifie si le type d'energie est le meme et l'origine est le meme et la
-                         * quantite est inferieur ou egale et si le prix * quantite est inferieur ou
-                         * egale au budget de client
-                         *
-                         * 1 - type,origine,quantite,prix de energie et obj_e sont les memes : normal
-                         * 2- type = SANS_CONTRAINTE le reste est normal
-                         * 3 - origine = SANS_CONTRAINTE le reste est normal
-                         * 4 - type et origine = SANS_CONTRAINTE
-                         * 5 - le marche enregistre une commande souhaité du client non disponible, pour
-                         * que les PONE la produisent
-                         */
 
-                        if (energie.getQuantite() >= obj_e.getQuantite()
-                                && energie.getPrix() * obj_e.getQuantite() <= obj_e.getBudget()) {
-
-                            if (energie.getType().equals(obj_e.getType())
-                                    && energie.getOrigine().equals(obj_e.getOrigine())) {
-                                achatValide = true;
-                                // on met a jour le fichier json
-                                energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
-                                obj_energie.put(String.valueOf(i), energie.toJSON());
-                            } else if (obj_e.getType().equals("SANS_CONTRAINTE")
-                                    && energie.getOrigine().equals(obj_e.getOrigine())) {
-                                achatValide = true;
-                                // on met a jour le fichier json
-                                energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
-                                obj_energie.put(String.valueOf(i), energie.toJSON());
-                            } else if (energie.getType().equals(obj_e.getType())
-                                    && obj_e.getOrigine().equals("SANS_CONTRAINTE")) {
-                                achatValide = true;
-                                // on met a jour le fichier json
-                                energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
-                                obj_energie.put(String.valueOf(i), energie.toJSON());
-                            } else if (obj_e.getType().equals("SANS_CONTRAINTE")
-                                    && obj_e.getOrigine().equals("SANS_CONTRAINTE")) {
-                                achatValide = true;
-                                // on met a jour le fichier json
-                                energie.setQuantite(energie.getQuantite() - obj_e.getQuantite());
-                                obj_energie.put(String.valueOf(i), energie.toJSON());
+                        if (achatValide) {
+                            // on envoie le message au Tare
+                            try {
+                                gestionMessage.afficheMessage("Envoi de l'energie achetée au Tare");
+                                // Création de la socket pour le Tare
+                                DatagramSocket socket = new DatagramSocket();
+                                // Création du message à envoyer
+                                JSONObject energie = obj_e.toJSON();
+                                String msg = energie.toString();
+                                byte[] tampon = msg.getBytes();
+                                DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
+                                        msgRecu.getAddress(), msgRecu.getPort());
+                                // Envoi du message
+                                socket.send(msgEnvoi);
+                                socket.close();
+                            } catch (IOException e) {
+                                gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
+                                        e);
+                                System.exit(0);
                             }
                         } else {
-                            achatValide = false;
-                        }
-                    }
-                    FileWriter fileWriter = new FileWriter(file);
-                    fileWriter.write(obj_energie.toString());
-                    fileWriter.close();
-
-                    if (achatValide) {
-                        // on envoie le message au Tare
-                        try {
-                            gestionMessage.afficheMessage("Envoi de l'energie achetée au Tare");
-                            // Création de la socket pour le Tare
-                            DatagramSocket socket = new DatagramSocket();
-                            // Création du message à envoyer
-                            JSONObject energie = obj_e.toJSON();
-                            String msg = energie.toString();
-                            byte[] tampon = msg.getBytes();
-                            DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
-                                    msgRecu.getAddress(), msgRecu.getPort());
-                            // Envoi du message
-                            socket.send(msgEnvoi);
-                            socket.close();
-                        } catch (IOException e) {
-                            gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
-                                    e);
-                            System.exit(0);
-                        }
-                    } else {
-                        try {
-                            // Création de la socket pour le Tare
-                            DatagramSocket socket = new DatagramSocket();
-                            // Création du message à envoyer
-                            JSONObject energie = obj_e.toJSON();
-                            String msg = "ACHAT EN ATTENTE";
-                            byte[] tampon = msg.getBytes();
-                            DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
-                                    msgRecu.getAddress(), msgRecu.getPort());
-                            // Envoi du message
-                            socket.send(msgEnvoi);
-                            socket.close();
-                        } catch (IOException e) {
-                            gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
-                                    e);
-                            System.exit(0);
-                        }
-                        // enregistrer la commande souhaité du client non disponible dans un fichhier
-                        // json, pour que les PONE la produisent
-                        String dossierCourant1 = System.getProperty("user.dir");
-                        String cheminFichier1 = dossierCourant1
-                                + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
-                        // gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
-                        File file1 = new File(cheminFichier1);
-                        try {
-                            if (!file1.exists() || file1.length() == 0) {
-                                file1.createNewFile();
-                                FileWriter fileWriter2 = new FileWriter(file1);
-                                fileWriter2.write("{}");
-                                fileWriter2.close();
+                            try {
+                                // Création de la socket pour le Tare
+                                DatagramSocket socket = new DatagramSocket();
+                                // Création du message à envoyer
+                                JSONObject energie = obj_e.toJSON();
+                                String msg = "ACHAT EN ATTENTE";
+                                byte[] tampon = msg.getBytes();
+                                DatagramPacket msgEnvoi = new DatagramPacket(tampon, tampon.length,
+                                        msgRecu.getAddress(), msgRecu.getPort());
+                                // Envoi du message
+                                socket.send(msgEnvoi);
+                                socket.close();
+                            } catch (IOException e) {
+                                gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " +
+                                        e);
+                                System.exit(0);
                             }
-                            FileReader fileReader1 = new FileReader(file1);
-                            BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
-                            String ligne1 = bufferedReader1.readLine();
-                            bufferedReader1.close();
-                            fileReader1.close();
-                            JSONObject all_energy = new JSONObject(ligne1);
-                            int nb_energy = all_energy.length();
+                            // enregistrer la commande souhaité du client non disponible dans un fichhier
+                            // json, pour que les PONE la produisent
+                            String dossierCourant1 = System.getProperty("user.dir");
+                            String cheminFichier1 = dossierCourant1
+                                    + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
+                            // gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
+                            File file1 = new File(cheminFichier1);
+                            try {
+                                if (!file1.exists() || file1.length() == 0) {
+                                    file1.createNewFile();
+                                    FileWriter fileWriter2 = new FileWriter(file1);
+                                    fileWriter2.write("{}");
+                                    fileWriter2.close();
+                                }
+                                FileReader fileReader1 = new FileReader(file1);
+                                BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
+                                String ligne1 = bufferedReader1.readLine();
+                                bufferedReader1.close();
+                                fileReader1.close();
+                                JSONObject all_energy = new JSONObject(ligne1);
+                                int nb_energy = all_energy.length();
 
-                            JSONObject json_obj_e = obj_e.toJSON();
-                            json_obj_e.put("prix", (int) (Math.random() * 9000) / 100.0 + 100);
+                                JSONObject json_obj_e = obj_e.toJSON();
+                                json_obj_e.put("prix", (int) (Math.random() * 9000) / 100.0 + 100);
 
-                            all_energy.put(String.valueOf(nb_energy + 1),
-                                    (Energie.fromJSON(json_obj_e.toString())).toJSON());
+                                all_energy.put(String.valueOf(nb_energy + 1),
+                                        (Energie.fromJSON(json_obj_e.toString())).toJSON());
 
-                            FileWriter fileWriter1 = new FileWriter(file1);
-                            fileWriter1.write(all_energy.toString());
-                            fileWriter1.close();
-                        } catch (IOException e) {
-                            gestionMessage
-                                    .afficheMessage(
-                                            "Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
+                                FileWriter fileWriter1 = new FileWriter(file1);
+                                fileWriter1.write(all_energy.toString());
+                                fileWriter1.close();
+                            } catch (IOException e) {
+                                gestionMessage
+                                        .afficheMessage(
+                                                "Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
+                            }
                         }
+                    } catch (IOException e) {
+                        gestionMessage
+                                .afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
                     }
-                } catch (IOException e) {
-                    gestionMessage
-                            .afficheMessage("Erreur: impossible d'écrire dans le fichier '" + cheminFichier + "'");
                 }
             } catch (ClassNotFoundException e) {
                 gestionMessage.afficheMessage("Objet reçu non reconnu : " + e);

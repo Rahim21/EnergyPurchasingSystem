@@ -12,9 +12,11 @@ $router->map('GET', '/logout', 'Auth/logout', 'logout');
 $router->map('GET|POST', '/register', 'Auth/register', 'register');
 $router->map('GET', '/home', 'Auth/home', 'home');
 // commande
-$router->map('GET', '/commande', 'Commande/index', 'commande');
+$router->map('GET|POST', '/commande', 'Commande/index', 'commande');
 $router->map('GET', '/commande-create', 'Commande/create', 'commande_create');
 $router->map('POST', '/commande-store', 'Commande/store', 'commande_store');
+$router->map('POST', '/commande-verif', 'Commande/verification', 'commande_verification');
+$router->map('POST', '/commande-delete', 'Commande/delete', 'commande_suppression');
 // production
 $router->map('GET', '/production', 'Production/index', 'production');
 

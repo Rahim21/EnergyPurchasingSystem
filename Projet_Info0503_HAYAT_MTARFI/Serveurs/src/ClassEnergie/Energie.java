@@ -19,6 +19,7 @@ public class Energie implements Serializable {
     private double budget;
     private boolean client;
     private int idClient = 0;
+    private String Certificat=null;
 
     /**
      * Constructeur par défaut
@@ -61,6 +62,20 @@ public class Energie implements Serializable {
         this.budget = monnaie;
         this.prix = monnaie;
         this.idClient = idClient;
+        this.codeDeSuivie = CodeDeSuivi.encoder(this);
+    }
+
+    // constructeur Certificat
+    public Energie(int idProprietaire, String type, String origine, int quantite, double monnaie, boolean client,
+            String Certificat) {
+        this.idProprietaire = idProprietaire;
+        this.type = type;
+        this.origine = origine;
+        this.quantite = quantite;
+        this.client = client;
+        this.budget = monnaie;
+        this.prix = monnaie;
+        this.Certificat = Certificat;
         this.codeDeSuivie = CodeDeSuivi.encoder(this);
     }
 
@@ -160,6 +175,15 @@ public class Energie implements Serializable {
     }
 
     /**
+     * Retourne le certificat
+     * 
+     * @return le certificat
+     */
+    public String getCertificat() {
+        return Certificat;
+    }
+
+    /**
      * Retourne une chaîne de caractères correspondant à l'objet
      * 
      * @return une chaîne de caractères correspondant à l'objet
@@ -203,6 +227,10 @@ public class Energie implements Serializable {
             return new Energie(idProprietaire, type, origine, quantite, prix, false);
         }
         double budget = object.getDouble("budget");
+        if (object.has("Certificat")) {
+            String Certificat = object.getString("Certificat");
+            return new Energie(idProprietaire, type, origine, quantite, budget, true, Certificat);
+        }
         return new Energie(idProprietaire, type, origine, quantite, budget, true);
     }
 }

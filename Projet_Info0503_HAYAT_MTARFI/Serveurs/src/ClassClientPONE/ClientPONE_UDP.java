@@ -89,7 +89,7 @@ public class ClientPONE_UDP implements Runnable {
             // créer l'energie et l'envoyer au serveur
             String dossierCourant1 = System.getProperty("user.dir");
             String cheminFichier1 = dossierCourant1 + "/Serveurs/src/classServeurMarcheGros/attente_energie.json";
-            gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
+            // gestionMessage.afficheMessage("Chemin du fichier : " + cheminFichier1);
             File file1 = new File(cheminFichier1);
             // si le fichier existe
             if (file1.length() != 0) {
@@ -188,9 +188,9 @@ public class ClientPONE_UDP implements Runnable {
             }
 
             try {
-                // temps 20-60 secondes entre chaque envoi d'energie
+                // temps 30-120 secondes entre chaque envoi d'energie
                 // gestionMessage.afficheMessage("Temps d'attente : " + temps + "ms");
-                int temps = (int) (Math.random() * 40000 + 20000);
+                int temps = (int) (Math.random() * 90000 + 30000);
                 Thread.sleep(temps);
             } catch (InterruptedException e) {
                 gestionMessage.afficheMessage("Erreur lors du sleep : " + e);

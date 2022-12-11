@@ -60,7 +60,7 @@ class CommandeController
         return null;
     }
 
-    public function updateCommande($id,$codeDeSuivi)
+    public function updateCommande($id, $codeDeSuivi)
     {
         // $id : id du propriétaire de la commande
         // $codeDeSuivi : code de suivi de la commande
