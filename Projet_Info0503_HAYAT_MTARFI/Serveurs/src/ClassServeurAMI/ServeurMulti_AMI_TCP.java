@@ -12,7 +12,7 @@ import java.net.Socket;
 /**
  * Classe correspondant à un serveur TCP multithreadé.
  */
-public class ServeurMulti_AMI_TCP implements Runnable{
+public class ServeurMulti_AMI_TCP implements Runnable {
 
     public final int portAMI;
     // public final int portAMIchiffre;

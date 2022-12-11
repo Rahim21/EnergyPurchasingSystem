@@ -3,6 +3,7 @@ package ClassServeurMarcheGros;
 import ClassEnergie.CodeDeSuivi;
 import ClassEnergie.Energie;
 import Config.Messenger;
+import Config.RSA;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -51,6 +52,7 @@ public class ThreadMarcheGros extends Thread {
     public String verificationAMI(Energie obj_e) {
         // ServeurAMI_TCP
         // Création de la socket pour l'AMI
+        String marche_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurMarcheGros/";
 
         Socket socket_ami = null;
         try {
@@ -75,19 +77,25 @@ public class ThreadMarcheGros extends Thread {
             System.exit(0);
         }
         // String reponse = "\"prix\":" + obj_e.getPrix(); // Prix
+        String dossierCourant = System.getProperty("user.dir");
+        String dossierAMI = dossierCourant + "/Serveurs/src/ClassServeurAMI/";
         if(obj_e.getCertificat() != null){
             JSONObject obj = new JSONObject(obj_e.toJSON().toString());
             obj.put("Certificat", obj_e.getCertificat());
-            output.println(obj.toString());
+            // output.println(obj.toString());
+            output.println(RSA.chiffrerRSA(dossierAMI+"AMI_PublicKey.bin", obj.toString()));
         } else {
-            output.println(obj_e.toJSON());
+            // output.println(obj_e.toJSON());
+            output.println(RSA.chiffrerRSA(dossierAMI+"AMI_PublicKey.bin", obj_e.toJSON().toString()));
         }
-        gestionMessage.afficheMessage("Demande de vérification à l'AMI pour : " + obj_e.getCodeDeSuivie());
+        gestionMessage.afficheMessage("[Chiffrement RSA] Demande de vérification à l'AMI pour : " + obj_e.getCodeDeSuivie());
 
         // reception de la réponse du client AMI
         String reponseClient = null;
         try {
             reponseClient = input.readLine();
+            gestionMessage.afficheMessage("Déchiffrement RSA...");
+            reponseClient = RSA.dechiffrerRSA(marche_folder+"MARCHE_PrivateKey.bin", reponseClient);
         } catch (IOException e) {
             gestionMessage.afficheMessage("Erreur lors de la réception de la réponse : " + e);
             System.exit(0);
@@ -100,8 +108,14 @@ public class ThreadMarcheGros extends Thread {
 
     @Override
     public void run() {
+        String marche_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurMarcheGros/";
         // Lire l'invitation : "Client:Port"
-        String[] invitation_str = new String(invitation.getData(), 0, invitation.getLength()).split(":");
+        String invite = new String(invitation.getData(), 0, invitation.getLength());
+        // String invite_str = RSA.dechiffrerRSA(marche_folder+"MARCHE_PrivateKey.bin", invite);
+
+
+        // Lire invite_str : "Client:Port"
+        String[] invitation_str = invite.split(":");
         String client_invitation = invitation_str[0];
         socketClient = Integer.parseInt(invitation_str[1]);
 
@@ -124,6 +138,16 @@ public class ThreadMarcheGros extends Thread {
                     byte[] tampon = new byte[1024];
                     msgRecu = new DatagramPacket(tampon, tampon.length, invitation.getAddress(), socketClient);
                     socket_invite.receive(msgRecu);
+
+                    // déchiffrer RSA
+                    // byte[] tampon2 = new byte[1024];
+                    // tampon2 = msgRecu.getData();
+                    // String msgRecu_str = new String(tampon2, 0, msgRecu.getLength());
+                    // gestionMessage.afficheMessage("Déchiffrement RSA...");
+                    // msgRecu_str = RSA.dechiffrerRSA(marche_folder+"MARCHE_PrivateKey.bin", msgRecu_str);
+                    // gestionMessage.afficheMessage("Message déchiffré : " + msgRecu_str);
+                    // msgRecu.setData(msgRecu_str.getBytes());
+                    // erreur : Erreur lors de la récupération de l'objet : java.io.StreamCorruptedException: invalid stream header: 5B424031
                 } catch (IOException e) {
                     gestionMessage.afficheMessage("Erreur lors de la réception du message : " + e);
                     System.exit(0);
@@ -191,6 +215,7 @@ public class ThreadMarcheGros extends Thread {
                     msgRecu = new DatagramPacket(tampon, tampon.length, invitation.getAddress(),
                             socketClient);
                     socket_invite.receive(msgRecu);
+                    gestionMessage.afficheMessage("recuuuuuuuuuuuuu");
                 } catch (IOException e) {
                     gestionMessage.afficheMessage("Erreur lors de la réception du message : " +
                             e);

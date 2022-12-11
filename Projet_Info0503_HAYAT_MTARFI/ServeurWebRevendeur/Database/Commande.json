@@ -6,6 +6,48 @@
             "origine": "ALGERIE",
             "quantite": 50,
             "budget": 2000
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "FRANCE",
+            "quantite": 23,
+            "budget": 4444
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "ALGERIE",
+            "quantite": 400,
+            "budget": 40000
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ESSENCE",
+            "origine": "ETATS_UNIS",
+            "quantite": 456,
+            "budget": 98000
+        },
+        {
+            "idProprietaire": 2,
+            "type": "GPL",
+            "origine": "MAROC",
+            "quantite": 888,
+            "budget": 50000
+        },
+        {
+            "idProprietaire": 2,
+            "type": "ELERCTRICITE",
+            "origine": "SUISSE",
+            "quantite": 800,
+            "budget": 995000
+        },
+        {
+            "idProprietaire": 2,
+            "type": "DIESEL",
+            "origine": "PAYS_BAS",
+            "quantite": 777,
+            "budget": 888888
         }
     ]
 }

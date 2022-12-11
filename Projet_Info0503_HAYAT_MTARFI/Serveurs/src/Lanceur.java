@@ -1,4 +1,5 @@
 import Config.Configuration;
+import Config.GenerationCles;
 import ClassServeurTARE.ServeurTare_HTTP;
 import ClassServeurMarcheGros.ServeurMulti_MarcheGros_UDP;
 import ClassClientPONE.ClientPONE_UDP;
@@ -47,12 +48,15 @@ public class Lanceur {
 
         // boucle pour créer des tarés, leur donné un id, pour l'entête de la requête
         // HTTP /tare{id}
+        mesServices.add(new Thread(new GenerationCles())); // Génération des clés
         mesServices.add(new Thread(new ServeurTare_HTTP(portTARE, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // TARE
         mesServices.add(new Thread(new ServeurMulti_MarcheGros_UDP(portMarche_UDP, portAMI_TCP))); // MARCHE GROS
         mesServices.add(new Thread(new ServeurMulti_AMI_TCP(portAMI_TCP))); // AMI
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
+        mesServices
+                .add(new Thread(new ClientPONE_UDP(portPONE_UDP_1, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
                                                                                                                        // 1
-        mesServices.add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
+        mesServices
+                .add(new Thread(new ClientPONE_UDP(portPONE_UDP_2, portMarche_UDP, nom[(int) (Math.random() * 10)]))); // PONE
                                                                                                                        // 2
 
         java.util.Iterator<Thread> it = mesServices.iterator();

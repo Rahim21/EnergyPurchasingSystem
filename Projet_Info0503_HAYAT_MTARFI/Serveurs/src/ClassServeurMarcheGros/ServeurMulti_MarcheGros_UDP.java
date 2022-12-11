@@ -2,6 +2,7 @@ package ClassServeurMarcheGros;
 
 import ClassEnergie.Energie;
 import Config.Messenger;
+import Config.RSA;
 
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
@@ -60,8 +61,17 @@ public class ServeurMulti_MarcheGros_UDP implements Runnable {
                 System.exit(0);
             }
 
-            // Lire l'invitation : "Client:Port"
-            String[] invitation_str = new String(invitation.getData(), 0, invitation.getLength()).split(":");
+            // Réception de l'invitation
+            String invite = new String(invitation.getData(), 0, invitation.getLength());
+
+            // déchiffrer RSA
+            // String marche_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurMarcheGros/";
+            // String invite_str = RSA.dechiffrerRSA(marche_folder+"MARCHE_PrivateKey.bin", invite);
+            
+            // gestionMessage.afficheMessage("Client connecté : " + invite_str);
+
+            // Lire invite_str : "Client:Port"
+            String[] invitation_str = invite.split(":");
             String client_invitation = invitation_str[0];
             int socketClient = Integer.parseInt(invitation_str[1]);
 

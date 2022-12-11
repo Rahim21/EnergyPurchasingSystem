@@ -2,6 +2,7 @@ package ClassServeurTARE;
 
 import ClassEnergie.Energie;
 import Config.Messenger;
+import Config.RSA;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -45,7 +46,6 @@ class TareHandler implements HttpHandler {
     }
 
     public void handle(HttpExchange t) {
-
         this.reponseHTTP = "";
         URI requestedUri = t.getRequestURI();
         String query = requestedUri.getRawQuery();
@@ -105,6 +105,12 @@ class TareHandler implements HttpHandler {
 
     public void tare_UDP(HttpExchange t) {
         // TARE UDP
+
+         // RSA pour la communication
+         String dossierCourant = System.getProperty("user.dir");
+         String dossierMARCHE = dossierCourant + "/Serveurs/src/ClassServeurMarcheGros/";
+
+
         // Création de la socket
         DatagramSocket socket = null;
         try {
@@ -117,11 +123,16 @@ class TareHandler implements HttpHandler {
         String invitation = "TARE:" + portTARE;
         // Envoi de l'invitation au MarcheGros [communication MarcheGros - TARE]
         try {
+            // String messageChiffre = RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", invitation);
+
+            // InetAddress adresse = InetAddress.getByName("localhost");    
+            // DatagramPacket msg = new DatagramPacket(messageChiffre.getBytes(), messageChiffre.length(), adresse, portMarche_UDP);
+
             // Transformation en tableau d'octets
             byte[] donnees = invitation.getBytes();
             InetAddress adresse = InetAddress.getByName("localhost");
-            DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
-                    adresse, portMarche_UDP);
+            DatagramPacket msg = new DatagramPacket(donnees, donnees.length, adresse, portMarche_UDP);
+
             socket.send(msg);
             gestionMessage.afficheMessage("Envoi de l'invitation de communication au Marche.");
         } catch (UnknownHostException e) {

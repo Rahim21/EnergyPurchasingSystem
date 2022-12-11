@@ -1,4 +1,4 @@
-package ClassServeurAMI;
+package Config;
 
 import java.security.KeyPairGenerator;
 import java.security.KeyPair;
@@ -14,6 +14,11 @@ import java.io.FileOutputStream;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class RSA {
 
@@ -251,6 +256,87 @@ public class RSA {
             System.exit(0);
         }
         return "Erreur inconnue";
+    }
+
+    public static String chiffrerRSA(String cle_publique, String message) {
+
+        System.out.println("Message à chiffrer : " + message);
+
+        // Recuperation de la cle publique
+        PublicKey clePublique = GestionClesRSA.lectureClePublique(cle_publique);
+
+        // Chiffrement du message
+        byte[] bytes = null;
+        try {
+            Cipher chiffreur = Cipher.getInstance("RSA");
+
+            chiffreur.init(Cipher.ENCRYPT_MODE, clePublique);
+
+            bytes = chiffreur.doFinal(message.getBytes());
+
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Erreur lors du chiffrement 1: " + e);
+            System.exit(0);
+        } catch (NoSuchPaddingException e) {
+            System.err.println("Erreur lors du chiffrement 2: " + e);
+            System.exit(0);
+        } catch (InvalidKeyException e) {
+            System.err.println("Erreur lors du chiffrement 3: " + e);
+            System.exit(0);
+        } catch (IllegalBlockSizeException e) {
+            System.err.println("Erreur lors du chiffrement 4: " + e);
+            System.exit(0);
+        } catch (BadPaddingException e) {
+            System.err.println("Erreur lors du chiffrement 5: " + e);
+            System.exit(0);
+        }
+
+        // Sauvegarde du message chiffré dans un string
+
+        return java.util.Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static String dechiffrerRSA(String cle_privee, String message_chiffre) {
+        // Récupération de la clé privée
+        PrivateKey clePrivee = GestionClesRSA.lectureClePrivee(cle_privee);
+
+        // Chargement du message chiffré en base64
+        byte[] messageCode = null;
+        try {
+            messageCode = java.util.Base64.getDecoder().decode(message_chiffre);
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement du message chiffré : " + e);
+            System.exit(0);
+        }
+
+        // Déchiffrement du message
+        byte[] bytes = null;
+        try {
+            Cipher dechiffreur = Cipher.getInstance("RSA");
+            dechiffreur.init(Cipher.DECRYPT_MODE, clePrivee);
+            bytes = dechiffreur.doFinal(messageCode);
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Erreur lors du déchiffrement 1: " + e);
+            System.exit(0);
+        } catch (NoSuchPaddingException e) {
+            System.err.println("Erreur lors du déchiffrement 2: " + e);
+            System.exit(0);
+        } catch (InvalidKeyException e) {
+            System.err.println("Erreur lors du déhiffrement 3: " + e);
+            System.exit(0);
+        } catch (IllegalBlockSizeException e) {
+            System.err.println("Erreur lors du déchiffrement 4: " + e);
+            System.exit(0);
+        } catch (BadPaddingException e) {
+            System.err.println("Erreur lors du déchiffrement : 5" + e);
+            System.exit(0);
+        }
+
+        // Affichage du message
+        String message = new String(bytes);
+        System.out.println("Message : " + message);
+
+        return message;
     }
 
 }

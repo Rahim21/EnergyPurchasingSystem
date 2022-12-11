@@ -1,4 +1,4 @@
-package ClassServeurAMI;
+package Config;
 
 import java.security.KeyFactory;
 import java.security.PublicKey;

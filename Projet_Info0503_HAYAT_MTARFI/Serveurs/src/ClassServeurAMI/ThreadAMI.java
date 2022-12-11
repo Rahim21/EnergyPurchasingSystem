@@ -3,6 +3,7 @@ package ClassServeurAMI;
 import ClassEnergie.Energie;
 import ClassChiffrementAES.ChiffrementAES;
 import Config.Messenger;
+import Config.RSA;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -54,11 +55,17 @@ public class ThreadAMI extends Thread {
     @Override
     public void run() {
 
+        // chemin du dossier courant
+        String ami_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurAMI/";
+
         String message = "";
 
         // ----- Lecture du message formaté JSON -----
         try {
             message = input.readLine();
+            // dechiffrement RSA
+            gestionMessage.afficheMessage("Déchiffrement RSA...");
+            message = RSA.dechiffrerRSA(ami_folder+"AMI_PrivateKey.bin", message);
         } catch (IOException e) {
             gestionMessage.afficheMessage("Erreur lors de la lecture : " + e);
             System.exit(0);
@@ -70,21 +77,27 @@ public class ThreadAMI extends Thread {
         // ----- Certification CRADO -----
         boolean certif = false;
         String resultatCertif = "AUCUN CERTIFICAT";
-        // chemin du dossier courant
-        String ami_folder = System.getProperty("user.dir") + "/Serveurs/src/ClassServeurAMI/";
-        String crado_folder = ami_folder+"CRADO/CRADO-"
+        // chemin du dossier CRADO
+        String crado_folder = ami_folder + "CRADO/CRADO-"
                 + obj_e.getCodeDeSuivie()
                 + ".bin";
-        String privee = ami_folder+"privee.bin";
-        String publique = ami_folder+"publique.bin";
+        // CRADO
+        String privee = ami_folder + "privee.bin";
+        String publique = ami_folder + "publique.bin";
+
+        // RSA pour la communication
+        String dossierCourant = System.getProperty("user.dir");
+        String dossierMARCHE = dossierCourant + "/Serveurs/src/ClassServeurMarcheGros/";
 
         if (obj_e.getCertificat() != null) { // ----- VERIFICATION CERTIFICAT D'UNE ENERGIE DU CLIENT -----
             // ----- VERIFICATION CERTIFICAT -----
             resultatCertif = RSA.VerifierSignatureRSA_JSON(obj_e.toJSON().toString(), crado_folder, publique);
             // ----- ENVOI DE L'ENERGIE -----
-            gestionMessage.afficheMessage(resultatCertif+" -> ClientID: "+obj_e.getIdProprietaire()+", Energie: "+obj_e.getCodeDeSuivie());
-            output.println(resultatCertif);
-            
+            gestionMessage.afficheMessage(resultatCertif + " -> ClientID: " + obj_e.getIdProprietaire() + ", Energie: "
+                    + obj_e.getCodeDeSuivie());
+            // output.println(resultatCertif);
+            output.println(RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", resultatCertif));            
+
         } else { // ----- ACHAT D'ENERGIE + AJOUT CERTIFICAT -----
 
             double prix = obj_e.getPrix();
@@ -95,7 +108,8 @@ public class ThreadAMI extends Thread {
             String resultat = (prix > 180) ? "REFUSE"
                     : "ACCEPT";
             gestionMessage.afficheMessage("Envoi requête au Marche : " + resultat);
-            output.println(resultat);
+            // output.println(resultat);
+            output.println(RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", resultat));
 
             if (resultat.equals("ACCEPT")) {
                 // ----- GENERATION CERTIFICAT -----
@@ -108,13 +122,11 @@ public class ThreadAMI extends Thread {
                     certif = true;
                 }
                 gestionMessage.afficheMessage(
-                        "Certification " + (certif ? "REUSSI, Signature ajoutée" : "ECHOUEE") + " pour : " + obj_e.getCodeDeSuivie());
+                        "Certification " + (certif ? "REUSSI, Signature ajoutée" : "ECHOUEE") + " pour : "
+                                + obj_e.getCodeDeSuivie());
             }
 
         }
-
-
-        
 
         // ----- Lecture du message crypté -----
         // byte[] data = null;

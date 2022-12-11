@@ -1,5 +1,7 @@
 package ClassClientPONE;
 
+import Config.RSA;
+
 import ClassEnergie.Energie;
 import ClassEnergie.Enum.Pays;
 import ClassEnergie.Enum.TypeEnergie;
@@ -51,6 +53,12 @@ public class ClientPONE_UDP implements Runnable {
     // 3.Envoie et reception avec la socket PONE
     // 4.Fermer la socket PONE
     public void run() {
+
+        // RSA pour la communication
+        String dossierCourant = System.getProperty("user.dir");
+        String dossierMARCHE = dossierCourant + "/Serveurs/src/ClassServeurMarcheGros/";
+
+
         DatagramSocket socket = null;
         boolean infini = true;
         while (infini) {
@@ -68,11 +76,16 @@ public class ClientPONE_UDP implements Runnable {
             String invitation = "PONE:" + portPONE_UDP;
             // Envoi de l'invitation au MarcheGros
             try {
+                // chiffrerRSA
+                // String messageChiffre = RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", invitation);
+
                 // Transformation en tableau d'octets
                 byte[] donnees = invitation.getBytes();
                 InetAddress adresse = InetAddress.getByName("localhost");
-                DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
-                        adresse, portMarche_UDP);
+                
+                // DatagramPacket msg = new DatagramPacket(messageChiffre.getBytes(), messageChiffre.length(), adresse, portMarche_UDP);
+                DatagramPacket msg = new DatagramPacket(donnees, donnees.length, adresse, portMarche_UDP);
+                
                 socket.send(msg);
                 gestionMessage.afficheMessage("Envoi de l'invitation de communication au Marche.");
             } catch (UnknownHostException e) {
@@ -82,6 +95,7 @@ public class ClientPONE_UDP implements Runnable {
                 gestionMessage.afficheMessage("Erreur lors de l'envoi du message : " + e);
                 System.exit(0);
             }
+
 
             // SI un client souhaite une énergie particulière (depuis le fichier
             // attenteCommande.json)
@@ -128,6 +142,9 @@ public class ClientPONE_UDP implements Runnable {
                     try {
                         byte[] donnees = baos.toByteArray();
                         InetAddress adresse = InetAddress.getByName("localhost");
+
+                        // donnees = RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", donnees.toString()).getBytes();
+
                         DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
                                 adresse, portPONE_UDP);
                         socket.send(msg);
@@ -174,6 +191,9 @@ public class ClientPONE_UDP implements Runnable {
                 try {
                     byte[] donnees = baos.toByteArray();
                     InetAddress adresse = InetAddress.getByName("localhost");
+
+                    // donnees = RSA.chiffrerRSA(dossierMARCHE+"MARCHE_PublicKey.bin", donnees.toString()).getBytes();
+
                     DatagramPacket msg = new DatagramPacket(donnees, donnees.length,
                             adresse, portPONE_UDP);
                     socket.send(msg);
